@@ -89,3 +89,19 @@ export default class Home extends Vue {
 ```
 
 # Autocomplete and type safety exemple
+
+## The module show only what you gave him
+
+![autocomplete1](https://github.com/victorgarciaesgi/VueXT/blob/master/captures/autocomplete1.png?raw=true)
+
+## It suggests all the related mutations/getters/actions/state
+
+![autocomplete2](https://github.com/victorgarciaesgi/VueXT/blob/master/captures/autocomplete2.png?raw=true)
+
+## It shows correctly what each function returns
+
+![autocomplete3](https://github.com/victorgarciaesgi/VueXT/blob/master/captures/autocomplete3.png?raw=true)
+
+## And it keeps the call signature of the original function
+
+![autocomplete4](https://github.com/victorgarciaesgi/VueXT/blob/master/captures/autocomplete4.png?raw=true)
