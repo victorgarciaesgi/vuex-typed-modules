@@ -24,9 +24,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/victorgarciaesgi/VueXT.git"
+    "url": "git+https://github.com/victorgarciaesgi/Vuex-typed-modules.git"
   },
-  "homepage": "https://github.com/victorgarciaesgi/VueXT#readme",
+  "homepage": "https://github.com/victorgarciaesgi/Vuex-typed-modules#readme",
   "scripts": {
     "clean": "rimraf dist",
     "compile": "tsc --pretty",
