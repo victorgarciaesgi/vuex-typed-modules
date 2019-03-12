@@ -1,18 +1,30 @@
 {
   "name": "vuex-typed-modules",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "A typescript wrapper for Vuex store with fully typed exposure",
-  "private": false,
+  "keywords": [
+    "vuex",
+    "vuex ts",
+    "vuex typescript",
+    "vuex typed",
+    "vuex modules",
+    "typecript vuex",
+    "typescript vue",
+    "vuex typed modules"
+  ],
   "author": {
     "name": "Victor Garcia",
     "url": "https://github.com/victorgarciaesgi"
   },
   "files": [
-    "dist/index.js",
-    "dist/index.d.ts"
+    "dist",
+    "types/index.d.ts",
+    "types/builder.d.ts",
+    "types/dynamic.d.ts",
+    "types/types.d.ts"
   ],
   "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "typings": "types/index.d.ts",
   "peerDependencies": {
     "vuex": "^3.1.0"
   },
@@ -28,7 +40,7 @@
   },
   "homepage": "https://github.com/victorgarciaesgi/Vuex-typed-modules#readme",
   "scripts": {
-    "clean": "rimraf dist",
+    "clean": "rimraf dist && rimraf types",
     "compile": "tsc --pretty",
     "build": "npm run clean && npm run compile"
   }

@@ -11,10 +11,10 @@
     "noImplicitAny": false,
     "noUnusedLocals": false,
     "pretty": true,
-    "sourceMap": true,
-    "jsx": "preserve",
+    "sourceMap": false,
     "downlevelIteration": true,
     "skipLibCheck": true,
+    "declarationDir": "types",
     "baseUrl": ".",
     "declaration": true,
     "paths": {
