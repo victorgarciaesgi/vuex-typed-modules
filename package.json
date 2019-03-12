@@ -1,7 +1,8 @@
 {
-  "name": "vue-xt",
-  "version": "0.0.1",
+  "name": "vuex-typed-modules",
+  "version": "0.1.0",
   "description": "A typescript wrapper for Vuex store with fully typed exposure",
+  "private": false,
   "author": {
     "name": "Victor Garcia",
     "url": "https://github.com/victorgarciaesgi"

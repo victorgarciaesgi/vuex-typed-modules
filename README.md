@@ -9,9 +9,9 @@ I decided to take it a bit further and eliminating all boilerplate for declarati
 # Usage
 
 ```bash
-npm i vue-xt
+npm i vuex-typed-modules
 #or
-yarn add vue-xt
+yarn add vuex-typed-modules
 ```
 
 # Define Module
@@ -19,7 +19,7 @@ yarn add vue-xt
 Create a `test.module.ts` in your store folder
 
 ```typescript
-import { defineModule } from "vuex-xt";
+import { defineModule } from "vuex-typed-modules";
 
 interface ItestState {
   count: number;
@@ -52,7 +52,7 @@ export const testModule = defineModule("testModule", state, {
 Then in your `main.ts`
 
 ```typescript
-import { storeBuilder } from "vue-xt";
+import { storeBuilder } from "vuex-typed-modules";
 
 new Vue({
   store: storeBuilder,
