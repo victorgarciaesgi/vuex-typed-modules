@@ -62,21 +62,21 @@ new Vue({
 
 # Usage in your components or in other modules!
 
-```vue
+```html
 <template>
   <div class="hello">
     {{ count }}
     <button @click="increment">increment</button>
   </div>
 </template>
+```
 
-<script lang="ts">
+```typescript
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { testModule } from "@/store/test.module";
 
 @Component
 export default class Home extends Vue {
-
   get count() {
     return testModule.getters.count;
   }
@@ -85,7 +85,6 @@ export default class Home extends Vue {
     testModule.mutations.addCount(2);
   }
 }
-
 ```
 
 # Autocomplete and type safety exemple
