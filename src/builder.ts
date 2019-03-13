@@ -160,3 +160,17 @@ function defineModule(name, state, vuexModule) {
 }
 
 export { storeBuilder, stateBuilder, defineModule };
+
+// const testModule = defineModule(
+//   "ezjf",
+//   { count: 1 },
+//   {
+//     getters: {
+//       incrmeent(state) {
+//         return "";
+//       }
+//     }
+//   }
+// );
+
+// testModule.getters.incrmeent;

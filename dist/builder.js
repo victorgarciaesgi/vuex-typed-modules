@@ -51,7 +51,6 @@ function stateBuilder(state, name) {
                     }
                 });
             });
-            console.log(renderedGetters);
         }
         return renderedGetters;
     };
