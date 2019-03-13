@@ -1,4 +1,4 @@
-# VueXT
+# Vuex-typed-modules
 
 A VueX wrapper to fully type your modules without more boilerplate!
 
