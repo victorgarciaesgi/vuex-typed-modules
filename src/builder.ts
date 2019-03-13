@@ -1,6 +1,13 @@
 import Vuex from "vuex";
 import Vue from "vue";
-import { ReturnedMutations, ReturnedActions, ReturnedGetters } from "./types";
+import {
+  ReturnedMutations,
+  ReturnedActions,
+  ReturnedGetters,
+  MutationsPayload,
+  ActionsPayload,
+  GettersPayload
+} from "./types";
 Vue.use(Vuex);
 
 const storeBuilder = new Vuex.Store({});
@@ -31,9 +38,7 @@ function createModuleTriggers(name, initialState) {
 function stateBuilder<S>(state: S, name: string) {
   const b = createModuleTriggers(name, state);
 
-  const registerMutations = <
-    T extends { [x: string]: (state, payload) => void }
-  >(
+  const registerMutations = <T extends MutationsPayload>(
     mutations: T
   ): ReturnedMutations<T> => {
     let renderedMutations = {};
@@ -45,9 +50,7 @@ function stateBuilder<S>(state: S, name: string) {
     return renderedMutations as any;
   };
 
-  const registerActions = <
-    T extends { [x: string]: (context, payload) => any }
-  >(
+  const registerActions = <T extends ActionsPayload>(
     actions: T
   ): ReturnedActions<T> => {
     let renderedActions = {};
@@ -59,7 +62,7 @@ function stateBuilder<S>(state: S, name: string) {
     return renderedActions as any;
   };
 
-  const registerGetters = <T extends { [x: string]: (state) => void }>(
+  const registerGetters = <T extends GettersPayload>(
     getters: T
   ): ReturnedGetters<T> => {
     let renderedGetters = {};
@@ -71,7 +74,6 @@ function stateBuilder<S>(state: S, name: string) {
           }
         });
       });
-      console.log(renderedGetters);
     }
     return renderedGetters as any;
   };
@@ -85,24 +87,20 @@ function stateBuilder<S>(state: S, name: string) {
 
 function defineModule<
   S,
-  M extends { [x: string]: (state, payload?) => void },
-  A extends { [x: string]: (context, payload?) => any },
-  G extends { [x: string]: (state) => any }
+  M extends MutationsPayload,
+  A extends ActionsPayload,
+  G extends GettersPayload
 >(
   name: string,
   state: S,
-  { actions, mutations, getters }: { actions: A; mutations: M; getters: G }
+  { actions, mutations, getters }: { actions?: A; mutations?: M; getters?: G }
 ): {
   getters: ReturnedGetters<G>;
   actions: ReturnedActions<A>;
   mutations: ReturnedMutations<M>;
   state: S;
 };
-function defineModule<
-  S,
-  M extends { [x: string]: (state, payload?) => void },
-  A extends { [x: string]: (context, payload?) => any }
->(
+function defineModule<S, M extends MutationsPayload, A extends ActionsPayload>(
   name: string,
   state: S,
   { actions, mutations }: { actions: A; mutations: M }
@@ -111,11 +109,7 @@ function defineModule<
   mutations: ReturnedMutations<M>;
   state: S;
 };
-function defineModule<
-  S,
-  M extends { [x: string]: (state, payload?) => void },
-  G extends { [x: string]: (state) => any }
->(
+function defineModule<S, M extends MutationsPayload, G extends GettersPayload>(
   name: string,
   state: S,
   { mutations, getters }: { mutations: M; getters: G }
@@ -124,11 +118,7 @@ function defineModule<
   mutations: ReturnedMutations<M>;
   state: S;
 };
-function defineModule<
-  S,
-  A extends { [x: string]: (context, payload?) => any },
-  G extends { [x: string]: (state) => any }
->(
+function defineModule<S, A extends ActionsPayload, G extends GettersPayload>(
   name: string,
   state: S,
   { actions, getters }: { actions: A; getters: G }
@@ -137,12 +127,12 @@ function defineModule<
   actions: ReturnedActions<A>;
   state: S;
 };
-function defineModule<S, M extends { [x: string]: (state, payload?) => void }>(
+function defineModule<S, M extends MutationsPayload>(
   name: string,
   state: S,
   { mutations }: { mutations: M }
 ): { mutations: ReturnedMutations<M>; state: S };
-function defineModule<S, A extends { [x: string]: (context, payload?) => any }>(
+function defineModule<S, A extends ActionsPayload>(
   name: string,
   state: S,
   { actions }: { actions: A }

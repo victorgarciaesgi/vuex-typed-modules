@@ -22,6 +22,16 @@ export type inferGetters<T extends (state) => any> = T extends (
   ? R
   : void;
 
+export type MutationsPayload = {
+  [x: string]: (state: any, payload?: any) => void;
+};
+export type ActionsPayload = {
+  [x: string]: (context: any, payload?: any) => any;
+};
+export type GettersPayload = {
+  [x: string]: (state?: any, getters?: any) => any;
+};
+
 export type ReturnedGetters<T extends any> = {
   [K in keyof T]: inferGetters<T[K]>
 };
