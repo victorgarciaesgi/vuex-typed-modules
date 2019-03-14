@@ -13,21 +13,21 @@ Vue.use(Vuex);
 const storeBuilder = new Vuex.Store({});
 const storedModules: string[] = [];
 
-function pushHotReload() {
-  const modules = storedModules.map(m => `./modules/${m}`);
-  module.hot.accept(modules, () => {
-    // require the updated modules
-    // have to add .default here due to babel 6 module output
-    let newModules = {};
-    storedModules.map(m => {
-      newModules[m] = require(`./modules/${m}`).default;
-    });
-    // swap in the new modules and mutations
-    storeBuilder.hotUpdate({
-      modules: newModules
-    });
-  });
-}
+// function pushHotReload() {
+//   const modules = storedModules.map(m => `./modules/${m}`);
+//   module.hot.accept(modules, () => {
+//     // require the updated modules
+//     // have to add .default here due to babel 6 module output
+//     let newModules = {};
+//     storedModules.map(m => {
+//       newModules[m] = require(`./modules/${m}`).default;
+//     });
+//     // swap in the new modules and mutations
+//     storeBuilder.hotUpdate({
+//       modules: newModules
+//     });
+//   });
+// }
 
 function createModuleTriggers(name, initialState) {
   function commit(handler) {

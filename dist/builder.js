@@ -20,18 +20,6 @@ vue_1.default.use(vuex_1.default);
 var storeBuilder = new vuex_1.default.Store({});
 exports.storeBuilder = storeBuilder;
 var storedModules = [];
-function pushHotReload() {
-    var modules = storedModules.map(function (m) { return "./modules/" + m; });
-    module.hot.accept(modules, function () {
-        var newModules = {};
-        storedModules.map(function (m) {
-            newModules[m] = require("./modules/" + m).default;
-        });
-        storeBuilder.hotUpdate({
-            modules: newModules
-        });
-    });
-}
 function createModuleTriggers(name, initialState) {
     function commit(handler) {
         return function (payload) { return storeBuilder.commit(name + "/" + handler.name, payload); };
