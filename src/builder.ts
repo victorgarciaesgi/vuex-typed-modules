@@ -11,23 +11,7 @@ import {
 Vue.use(Vuex);
 
 const storeBuilder = new Vuex.Store({});
-const storedModules: string[] = [];
-
-// function pushHotReload() {
-//   const modules = storedModules.map(m => `./modules/${m}`);
-//   module.hot.accept(modules, () => {
-//     // require the updated modules
-//     // have to add .default here due to babel 6 module output
-//     let newModules = {};
-//     storedModules.map(m => {
-//       newModules[m] = require(`./modules/${m}`).default;
-//     });
-//     // swap in the new modules and mutations
-//     storeBuilder.hotUpdate({
-//       modules: newModules
-//     });
-//   });
-// }
+const storedModules = {};
 
 function createModuleTriggers(name, initialState) {
   function commit(handler) {
@@ -160,10 +144,41 @@ function defineModule(name, state, vuexModule) {
     state,
     ...vuexModule
   });
-  storedModules.push(name);
-  // if (module.hot) {
-  //   pushHotReload();
-  // }
+
+  storedModules[name] = {
+    state,
+    ...vuexModule
+  };
+
+  if (module.hot) {
+    // const fileName = _getCallerFile();
+    // console.log(`./${fileName}`);
+    // console.log(require(`./`));
+    // module.hot.accept(`./store`, () => {
+    //   console.log(require(`./`));
+    //   const { getters, mutations, actions } = require(`./${fileName}`);
+    //   debugger;
+    //   const currentState = storeBuilder.state[name];
+    //   console.log(currentState, mutations);
+    //   storeBuilder.hotUpdate({
+    //     modules: {
+    //       ...storedModules,
+    //       [name]: {
+    //         state: currentState,
+    //         getters,
+    //         mutations,
+    //         actions
+    //       }
+    //     }
+    //   });
+    //   storedModules[name] = {
+    //     state: currentState,
+    //     getters,
+    //     mutations,
+    //     actions
+    //   };
+    // });
+  }
 
   const {
     registerGetters,
@@ -182,17 +197,3 @@ function defineModule(name, state, vuexModule) {
 }
 
 export { storeBuilder, stateBuilder, defineModule };
-
-// const testModule = defineModule(
-//   "ezjf",
-//   { count: 1 },
-//   {
-//     getters: {
-//       incrmeent(state) {
-//         return "";
-//       }
-//     }
-//   }
-// );
-
-// testModule.getters.incrmeent;

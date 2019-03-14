@@ -2,10 +2,7 @@ export type IsValidArg<T> = T extends object
   ? (keyof T extends never ? false : true)
   : true;
 
-export type inferMutations<T> = T extends (
-  state: any,
-  payload?: infer P
-) => void
+export type inferMutations<T> = T extends (state: any, payload: infer P) => void
   ? IsValidArg<P> extends true
     ? (payload: P) => void
     : () => void

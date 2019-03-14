@@ -19,7 +19,7 @@ var vue_1 = __importDefault(require("vue"));
 vue_1.default.use(vuex_1.default);
 var storeBuilder = new vuex_1.default.Store({});
 exports.storeBuilder = storeBuilder;
-var storedModules = [];
+var storedModules = {};
 function createModuleTriggers(name, initialState) {
     function commit(handler) {
         return function (payload) { return storeBuilder.commit(name + "/" + handler.name, payload); };
@@ -82,7 +82,9 @@ function stateBuilder(state, name) {
 exports.stateBuilder = stateBuilder;
 function defineModule(name, state, vuexModule) {
     storeBuilder.registerModule(name, __assign({ namespaced: true, state: state }, vuexModule));
-    storedModules.push(name);
+    storedModules[name] = __assign({ state: state }, vuexModule);
+    if (module.hot) {
+    }
     var _a = stateBuilder(state, name), registerGetters = _a.registerGetters, registerMutations = _a.registerMutations, registerActions = _a.registerActions, newState = _a.state;
     return {
         mutations: registerMutations(vuexModule.mutations),

@@ -8,6 +8,20 @@ I decided to take it a bit further and eliminating all boilerplate for declarati
 
 It's working with dynamic modules too
 
+# Warning
+
+In production build on your `vue.config.js`, configure your uglifier to keep function name, otherwise it will not work
+
+```javascript
+new UglifyJsPlugin({
+  uglifyOptions: {
+    keep_fnames: true,
+  },
+}),
+```
+
+Also for IE 11 usage, you can add an `function name` polyfill
+
 # Usage
 
 ```bash
