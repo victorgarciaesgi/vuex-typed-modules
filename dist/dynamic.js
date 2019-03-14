@@ -19,8 +19,8 @@ var registerDynamicModule = (function () {
         this.state = state;
     }
     registerDynamicModule.prototype.register = function () {
-        _1.storeBuilder.registerModule(name, __assign({ namespaced: true, state: this.state }, this.Vuexmodule));
-        var _a = _1.stateBuilder(this.state, name), registerGetters = _a.registerGetters, registerMutations = _a.registerMutations, registerActions = _a.registerActions, newState = _a.state;
+        _1.storeBuilder.registerModule(this.name, __assign({ namespaced: true, state: this.state }, this.Vuexmodule));
+        var _a = _1.stateBuilder(this.state, this.name), registerGetters = _a.registerGetters, registerMutations = _a.registerMutations, registerActions = _a.registerActions, newState = _a.state;
         (this.mutations = registerMutations(this.Vuexmodule.mutations)),
             (this.actions = registerActions(this.Vuexmodule.actions)),
             (this.getters = registerGetters(this.Vuexmodule.getters)),

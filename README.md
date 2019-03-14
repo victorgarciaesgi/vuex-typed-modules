@@ -6,6 +6,8 @@ I'm realy greatly inspired by [@mrcrowl](https://github.com/mrcrowl) work and hi
 
 I decided to take it a bit further and eliminating all boilerplate for declarating modules
 
+It's working with dynamic modules too
+
 # Usage
 
 ```bash
@@ -87,6 +89,47 @@ export default class Home extends Vue {
 }
 ```
 
+# Dynamic Modules
+
+For dynamic modules, simply call the function `defineDynamicModule` instead
+
+```typescript
+export const testModule = defineDynamicModule("testModule", state, {
+  getters,
+  mutations
+});
+```
+
+Then in your component when you need to activate the module
+
+```typescript
+import { Component, Prop, Vue } from "vue-property-decorator";
+import { testModule } from "@/store/test.module";
+
+@Component
+export default class Home extends Vue {
+  get count() {
+    return testModule.getters.count;
+  }
+
+  increment() {
+    testModule.mutations.addCount(2);
+  }
+
+  created() {
+    testModule.resgiter();
+  }
+
+  destroyed() {
+    testModule.unregister();
+  }
+}
+```
+
+```
+
+
+
 # Autocomplete and type safety exemple
 
 The module show only what you gave him
@@ -104,3 +147,4 @@ It shows correctly what each function returns
 And it keeps the call signature of the original function
 
 ![autocomplete4](https://github.com/victorgarciaesgi/VueXT/blob/master/captures/autocomplete4.png?raw=true)
+```

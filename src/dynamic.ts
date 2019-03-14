@@ -16,7 +16,7 @@ class registerDynamicModule {
     this.state = state;
   }
   public register() {
-    storeBuilder.registerModule(name, {
+    storeBuilder.registerModule(this.name, {
       namespaced: true,
       state: this.state,
       ...this.Vuexmodule
@@ -26,7 +26,7 @@ class registerDynamicModule {
       registerMutations,
       registerActions,
       state: newState
-    } = stateBuilder(this.state, name);
+    } = stateBuilder(this.state, this.name);
     (this.mutations = registerMutations(this.Vuexmodule.mutations)),
       (this.actions = registerActions(this.Vuexmodule.actions)),
       (this.getters = registerGetters(this.Vuexmodule.getters)),
