@@ -1,52 +1,82 @@
-import Vuex from "vuex";
-import Vue from "vue";
-Vue.use(Vuex);
-const storeBuilder = new Vuex.Store({});
+"use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var vuex_1 = __importDefault(require("vuex"));
+var vue_1 = __importDefault(require("vue"));
+vue_1.default.use(vuex_1.default);
+var storeBuilder = new vuex_1.default.Store({});
+exports.storeBuilder = storeBuilder;
+var storedModules = [];
+function pushHotReload() {
+    var modules = storedModules.map(function (m) { return "./modules/" + m; });
+    module.hot.accept(modules, function () {
+        var newModules = {};
+        storedModules.map(function (m) {
+            newModules[m] = require("./modules/" + m).default;
+        });
+        storeBuilder.hotUpdate({
+            modules: newModules
+        });
+    });
+}
 function createModuleTriggers(name, initialState) {
     function commit(handler) {
-        return payload => storeBuilder.commit(name + "/" + handler.name, payload);
+        return function (payload) { return storeBuilder.commit(name + "/" + handler.name, payload); };
     }
     function dispatch(handler) {
-        return payload => storeBuilder.dispatch(name + "/" + handler.name, payload);
+        return function (payload) { return storeBuilder.dispatch(name + "/" + handler.name, payload); };
     }
     function read(handler) {
-        return () => storeBuilder.getters[name + "/" + handler.name];
+        return function () { return storeBuilder.getters[name + "/" + handler.name]; };
     }
     return {
-        commit,
-        dispatch,
-        read,
+        commit: commit,
+        dispatch: dispatch,
+        read: read,
         get state() {
             return storeBuilder.state[name];
         }
     };
 }
 function stateBuilder(state, name) {
-    const b = createModuleTriggers(name, state);
-    const registerMutations = (mutations) => {
-        let renderedMutations = {};
+    var b = createModuleTriggers(name, state);
+    var registerMutations = function (mutations) {
+        var renderedMutations = {};
         if (mutations) {
-            Object.keys(mutations).map(m => {
+            Object.keys(mutations).map(function (m) {
                 renderedMutations[m] = b.commit(mutations[m]);
             });
         }
         return renderedMutations;
     };
-    const registerActions = (actions) => {
-        let renderedActions = {};
+    var registerActions = function (actions) {
+        var renderedActions = {};
         if (actions) {
-            Object.keys(actions).map(m => {
+            Object.keys(actions).map(function (m) {
                 renderedActions[m] = b.dispatch(actions[m]);
             });
         }
         return renderedActions;
     };
-    const registerGetters = (getters) => {
-        let renderedGetters = {};
+    var registerGetters = function (getters) {
+        var renderedGetters = {};
         if (getters) {
-            Object.keys(getters).map((m) => {
+            Object.keys(getters).map(function (m) {
                 Object.defineProperty(renderedGetters, m, {
-                    get() {
+                    get: function () {
                         return b.read(getters[m])();
                     }
                 });
@@ -55,19 +85,17 @@ function stateBuilder(state, name) {
         return renderedGetters;
     };
     return {
-        registerMutations,
-        registerActions,
-        registerGetters,
+        registerMutations: registerMutations,
+        registerActions: registerActions,
+        registerGetters: registerGetters,
         state: b.state
     };
 }
+exports.stateBuilder = stateBuilder;
 function defineModule(name, state, vuexModule) {
-    storeBuilder.registerModule(name, {
-        namespaced: true,
-        state,
-        ...vuexModule
-    });
-    const { registerGetters, registerMutations, registerActions, state: newState } = stateBuilder(state, name);
+    storeBuilder.registerModule(name, __assign({ namespaced: true, state: state }, vuexModule));
+    storedModules.push(name);
+    var _a = stateBuilder(state, name), registerGetters = _a.registerGetters, registerMutations = _a.registerMutations, registerActions = _a.registerActions, newState = _a.state;
     return {
         mutations: registerMutations(vuexModule.mutations),
         actions: registerActions(vuexModule.actions),
@@ -77,4 +105,4 @@ function defineModule(name, state, vuexModule) {
         }
     };
 }
-export { storeBuilder, stateBuilder, defineModule };
+exports.defineModule = defineModule;

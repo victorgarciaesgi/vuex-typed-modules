@@ -7,9 +7,9 @@ declare function stateBuilder<S>(state: S, name: string): {
     state: any;
 };
 declare function defineModule<S, M extends MutationsPayload, A extends ActionsPayload, G extends GettersPayload>(name: string, state: S, { actions, mutations, getters }: {
-    actions?: A;
-    mutations?: M;
-    getters?: G;
+    actions: A;
+    mutations: M;
+    getters: G;
 }): {
     getters: ReturnedGetters<G>;
     actions: ReturnedActions<A>;
