@@ -25,6 +25,7 @@
   ],
   "main": "dist/index.js",
   "typings": "types/index.d.ts",
+  "license": "MIT",
   "peerDependencies": {
     "vuex": "^3.1.0"
   },
