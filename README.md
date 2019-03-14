@@ -117,7 +117,7 @@ export default class Home extends Vue {
   }
 
   created() {
-    testModule.resgiter();
+    testModule.register();
   }
 
   destroyed() {

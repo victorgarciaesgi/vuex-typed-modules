@@ -37,7 +37,7 @@ class registerDynamicModule {
       });
   }
   public unregister() {
-    storeBuilder.unregisterModule(name);
+    storeBuilder.unregisterModule(this.name);
   }
 }
 

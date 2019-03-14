@@ -31,7 +31,7 @@ var registerDynamicModule = (function () {
             });
     };
     registerDynamicModule.prototype.unregister = function () {
-        _1.storeBuilder.unregisterModule(name);
+        _1.storeBuilder.unregisterModule(this.name);
     };
     return registerDynamicModule;
 }());
