@@ -8,7 +8,7 @@ I decided to take it a bit further and eliminating all boilerplate for declarati
 
 It's working with dynamic modules too
 
-# Warning
+## Warning
 
 In production build on your `vue.config.js`, configure your uglifier to keep function name, otherwise it will not work
 
@@ -22,7 +22,7 @@ new UglifyJsPlugin({
 
 Also for IE 11 usage, you can add an `function name` polyfill
 
-# Usage
+## Usage
 
 ```bash
 npm i vuex-typed-modules
@@ -30,7 +30,7 @@ npm i vuex-typed-modules
 yarn add vuex-typed-modules
 ```
 
-# Define Module
+## Define Module
 
 Create a `test.module.ts` in your store folder
 
@@ -63,7 +63,7 @@ export const testModule = defineModule("testModule", state, {
 });
 ```
 
-# Module implementation
+## Module implementation
 
 Then in your `main.ts`
 
@@ -76,7 +76,7 @@ new Vue({
 }).$mount("#app");
 ```
 
-# Usage in your components or in other modules!
+## Usage in your components or in other modules!
 
 ```html
 <template>
@@ -103,7 +103,7 @@ export default class Home extends Vue {
 }
 ```
 
-# Dynamic Modules
+## Dynamic Modules
 
 For dynamic modules, simply call the function `defineDynamicModule` instead
 
@@ -140,7 +140,7 @@ export default class Home extends Vue {
 }
 ```
 
-# Autocomplete and type safety exemple
+## Autocomplete and type safety exemple
 
 The module show only what you gave him
 
