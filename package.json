@@ -21,7 +21,8 @@
     "types/index.d.ts",
     "types/builder.d.ts",
     "types/dynamic.d.ts",
-    "types/types.d.ts"
+    "types/types.d.ts",
+    "types/hotModule.d.ts"
   ],
   "main": "dist/index.js",
   "typings": "types/index.d.ts",

@@ -1,43 +1,71 @@
 import { ReturnedGetters, ReturnedActions, ReturnedMutations } from "./types";
 import { storeBuilder, stateBuilder } from "./";
+import { storedModules } from "./builder";
+import { enableHotReload, disableHotReload } from "./hotModule";
 
 class registerDynamicModule {
-  public mutations;
-  public actions;
-  public getters;
+  public mutations = {};
+  public actions = {};
+  public getters = {};
 
   public Vuexmodule;
-  public state;
+  public initialState;
   public name;
+  public state;
+  public newState = {};
+
+  private registered = false;
 
   constructor(name, state, Vuexmodule) {
     this.Vuexmodule = Vuexmodule;
     this.name = name;
-    this.state = state;
+    this.initialState = state;
+    Object.defineProperty(this, "state", {
+      get() {
+        return this.newState;
+      },
+      set(value) {
+        this.newState = value;
+      }
+    });
   }
   public register() {
-    storeBuilder.registerModule(this.name, {
+    console.log(storedModules, storeBuilder);
+    storedModules[this.name] = {
       namespaced: true,
-      state: this.state,
       ...this.Vuexmodule
-    });
-    const {
-      registerGetters,
-      registerMutations,
-      registerActions,
-      state: newState
-    } = stateBuilder(this.state, this.name);
-    (this.mutations = registerMutations(this.Vuexmodule.mutations)),
-      (this.actions = registerActions(this.Vuexmodule.actions)),
-      (this.getters = registerGetters(this.Vuexmodule.getters)),
-      Object.defineProperty(this, "state", {
-        get() {
-          return newState;
-        }
+    };
+    if (!storeBuilder.state[this.name] && !this.registered) {
+      storeBuilder.registerModule(this.name, {
+        namespaced: true,
+        state: this.initialState,
+        ...this.Vuexmodule
       });
+      this.registered = true;
+    }
+    if (storeBuilder.state[this.name]) {
+      const {
+        registerGetters,
+        registerMutations,
+        registerActions,
+        state: newState
+      } = stateBuilder(this.initialState, this.name);
+      (this.mutations = registerMutations(this.Vuexmodule.mutations)),
+        (this.actions = registerActions(this.Vuexmodule.actions)),
+        (this.getters = registerGetters(this.Vuexmodule.getters)),
+        (this.newState = newState);
+    }
   }
   public unregister() {
-    storeBuilder.unregisterModule(this.name);
+    if (!module.hot) {
+      storeBuilder.unregisterModule(this.name);
+      disableHotReload(this.name);
+      this.mutations = {};
+      this.actions = {};
+      this.getters = {};
+      this.state = {};
+      this.registered = false;
+    }
   }
 }
 
@@ -130,15 +158,8 @@ function defineDynamicModule<
   unregister(): void;
 };
 function defineDynamicModule(name, state, vuexModule) {
+  enableHotReload(name, state, vuexModule, true);
   return new registerDynamicModule(name, state, vuexModule) as any;
 }
 
 export { defineDynamicModule };
-
-defineDynamicModule(
-  "vuex",
-  { count: 1 },
-  {
-    mutations: {}
-  }
-);

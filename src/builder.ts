@@ -8,10 +8,11 @@ import {
   ActionsPayload,
   GettersPayload
 } from "./types";
+import { enableHotReload } from "./hotModule";
 Vue.use(Vuex);
 
 const storeBuilder = new Vuex.Store({});
-const storedModules = {};
+const storedModules: any = {};
 
 function createModuleTriggers(name, initialState) {
   function commit(handler) {
@@ -139,45 +140,14 @@ function defineModule<S, A extends ActionsPayload>(
   { actions }: { actions: A }
 ): { actions: ReturnedActions<A>; state: S };
 function defineModule(name, state, vuexModule) {
-  storeBuilder.registerModule(name, {
-    namespaced: true,
-    state,
-    ...vuexModule
-  });
-
-  storedModules[name] = {
-    state,
-    ...vuexModule
-  };
-
   if (module.hot) {
-    // const fileName = _getCallerFile();
-    // console.log(`./${fileName}`);
-    // console.log(require(`./`));
-    // module.hot.accept(`./store`, () => {
-    //   console.log(require(`./`));
-    //   const { getters, mutations, actions } = require(`./${fileName}`);
-    //   debugger;
-    //   const currentState = storeBuilder.state[name];
-    //   console.log(currentState, mutations);
-    //   storeBuilder.hotUpdate({
-    //     modules: {
-    //       ...storedModules,
-    //       [name]: {
-    //         state: currentState,
-    //         getters,
-    //         mutations,
-    //         actions
-    //       }
-    //     }
-    //   });
-    //   storedModules[name] = {
-    //     state: currentState,
-    //     getters,
-    //     mutations,
-    //     actions
-    //   };
-    // });
+    enableHotReload(name, state, vuexModule);
+  } else {
+    storeBuilder.registerModule(name, {
+      namespaced: true,
+      state,
+      ...vuexModule
+    });
   }
 
   const {
@@ -196,4 +166,4 @@ function defineModule(name, state, vuexModule) {
   } as any;
 }
 
-export { storeBuilder, stateBuilder, defineModule };
+export { storeBuilder, stateBuilder, defineModule, storedModules };

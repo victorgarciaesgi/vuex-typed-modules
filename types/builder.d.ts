@@ -1,5 +1,6 @@
 import { ReturnedMutations, ReturnedActions, ReturnedGetters, MutationsPayload, ActionsPayload, GettersPayload } from "./types";
 declare const storeBuilder: import("vuex").Store<{}>;
+declare const storedModules: any;
 declare function stateBuilder<S>(state: S, name: string): {
     registerMutations: <T extends MutationsPayload>(mutations: T) => ReturnedMutations<T>;
     registerActions: <T extends ActionsPayload>(actions: T) => ReturnedActions<T>;
@@ -52,4 +53,4 @@ declare function defineModule<S, A extends ActionsPayload>(name: string, state: 
     actions: ReturnedActions<A>;
     state: S;
 };
-export { storeBuilder, stateBuilder, defineModule };
+export { storeBuilder, stateBuilder, defineModule, storedModules };
