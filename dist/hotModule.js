@@ -14,7 +14,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var builder_1 = require("./builder");
 function enableHotReload(name, state, vuexModule, dynamic) {
     module.hot.accept();
-    console.log(builder_1.storeBuilder.state);
     if (builder_1.storedModules[name] == null && !dynamic) {
         builder_1.storeBuilder.registerModule(name, __assign({ namespaced: true, state: state }, vuexModule));
         builder_1.storedModules[name] = __assign({ namespaced: true }, vuexModule);

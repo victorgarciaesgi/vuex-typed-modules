@@ -3,7 +3,6 @@ import { log } from "util";
 
 export function enableHotReload(name, state, vuexModule, dynamic?: boolean) {
   module.hot.accept();
-  console.log(storeBuilder.state);
   if (storedModules[name] == null && !dynamic) {
     storeBuilder.registerModule(name, {
       namespaced: true,

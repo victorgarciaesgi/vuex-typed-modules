@@ -1,6 +1,6 @@
 # Vuex-typed-modules
 
-A VueX wrapper to fully type your modules without more boilerplate!
+A VueX wrapper to fully type your modules without more boilerplate and out of the box Hot Module Replacement
 
 I'm realy greatly inspired by [@mrcrowl](https://github.com/mrcrowl) work and his lib [vuex-typex](https://github.com/mrcrowl/vuex-typex)
 
