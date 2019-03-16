@@ -22,15 +22,35 @@ var storeBuilder = new vuex_1.default.Store({});
 exports.storeBuilder = storeBuilder;
 var storedModules = {};
 exports.storedModules = storedModules;
+function functionNameError() {
+    throw new Error("Function name not supported.\n  Causes: \n    -Production build with Uglyfication (see Readme)\n    -Arrow functions\n    -Old browser that don't supports function name");
+}
 function createModuleTriggers(name, initialState) {
     function commit(handler) {
-        return function (payload) { return storeBuilder.commit(name + "/" + handler.name, payload); };
+        if (!handler.name) {
+            functionNameError();
+        }
+        else {
+            return function (payload) { return storeBuilder.commit(name + "/" + handler.name, payload); };
+        }
     }
     function dispatch(handler) {
-        return function (payload) { return storeBuilder.dispatch(name + "/" + handler.name, payload); };
+        if (!handler.name) {
+            functionNameError();
+        }
+        else {
+            return function (payload) {
+                return storeBuilder.dispatch(name + "/" + handler.name, payload);
+            };
+        }
     }
     function read(handler) {
-        return function () { return storeBuilder.getters[name + "/" + handler.name]; };
+        if (!handler.name) {
+            functionNameError();
+        }
+        else {
+            return function () { return storeBuilder.getters[name + "/" + handler.name]; };
+        }
     }
     return {
         commit: commit,

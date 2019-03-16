@@ -14,17 +14,38 @@ Vue.use(Vuex);
 const storeBuilder = new Vuex.Store({});
 const storedModules: any = {};
 
+function functionNameError() {
+  throw new Error(`Function name not supported.
+  Causes: 
+    -Production build with Uglyfication (see Readme)
+    -Arrow functions
+    -Old browser that don't supports function name`);
+}
+
 function createModuleTriggers(name, initialState) {
   function commit(handler) {
-    return payload => storeBuilder.commit(name + "/" + handler.name, payload);
+    if (!handler.name) {
+      functionNameError();
+    } else {
+      return payload => storeBuilder.commit(name + "/" + handler.name, payload);
+    }
   }
 
   function dispatch(handler) {
-    return payload => storeBuilder.dispatch(name + "/" + handler.name, payload);
+    if (!handler.name) {
+      functionNameError();
+    } else {
+      return payload =>
+        storeBuilder.dispatch(name + "/" + handler.name, payload);
+    }
   }
 
   function read(handler) {
-    return () => storeBuilder.getters[name + "/" + handler.name];
+    if (!handler.name) {
+      functionNameError();
+    } else {
+      return () => storeBuilder.getters[name + "/" + handler.name];
+    }
   }
 
   return {

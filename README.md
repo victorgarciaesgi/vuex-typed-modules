@@ -2,6 +2,8 @@
 
 A VueX wrapper to fully type your modules without more boilerplate and out of the box Hot Module Replacement
 
+![hotmodule](https://github.com/victorgarciaesgi/Vuex-typed-modules/blob/master/captures/hotmodule.png?raw=true)
+
 I'm realy greatly inspired by [@mrcrowl](https://github.com/mrcrowl) work and his lib [vuex-typex](https://github.com/mrcrowl/vuex-typex)
 
 I decided to take it a bit further and eliminating all boilerplate for declarating modules
