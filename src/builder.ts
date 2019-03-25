@@ -1,5 +1,4 @@
-import Vuex from "vuex";
-import Vue from "vue";
+import { Store } from "vuex";
 import {
   ReturnedMutations,
   ReturnedActions,
@@ -9,10 +8,71 @@ import {
   GettersPayload
 } from "./types";
 import { enableHotReload } from "./hotModule";
-Vue.use(Vuex);
+import { oc } from "ts-optchain";
 
-const storeBuilder = new Vuex.Store({});
-const storedModules: any = {};
+class storeConstructor {
+  private _store!: Store<any>;
+  public storedModules: any = {};
+
+  public Store(storeConstructor) {
+    this._store = new storeConstructor({
+      modules: this.storedModules
+    });
+    return this._store;
+  }
+
+  storeModule(name: string, state, vuexModule) {
+    this.storedModules[name] = {
+      namespaced: true,
+      state,
+      ...vuexModule
+    };
+  }
+
+  deleteStoreModule(name: string) {
+    delete this.storedModules[name];
+  }
+
+  get state() {
+    return oc(this._store).state;
+  }
+
+  get getters() {
+    return oc(this._store).getters;
+  }
+
+  commit(fnName: string, payload: any) {
+    oc(this._store).commit(() => {})(fnName, payload);
+  }
+
+  dispatch(fnName: string, payload: any) {
+    oc(this._store).dispatch()(fnName, payload);
+  }
+
+  registerModule(name: string, state, modules: any) {
+    if (this._store) {
+      this._store.registerModule(name, {
+        namespaced: true,
+        state,
+        ...modules
+      });
+    }
+  }
+  unregisterModule(name: string) {
+    oc(this._store).unregisterModule(() => {})(name);
+  }
+  hotUpdate() {
+    if (this._store) {
+      this._store.hotUpdate({
+        modules: {
+          ...this.storedModules
+        }
+      });
+    }
+  }
+}
+
+const storeBuilder = new storeConstructor();
 
 function functionNameError() {
   throw new Error(`Function name not supported.
@@ -44,17 +104,19 @@ function createModuleTriggers(name, initialState) {
     if (!handler.name) {
       functionNameError();
     } else {
-      return () => storeBuilder.getters[name + "/" + handler.name];
+      return () => storeBuilder.getters[name + "/" + handler.name]();
     }
+  }
+
+  function state() {
+    return () => storeBuilder.state[name]();
   }
 
   return {
     commit,
     dispatch,
     read,
-    get state() {
-      return storeBuilder.state[name];
-    }
+    state
   };
 }
 
@@ -161,15 +223,8 @@ function defineModule<S, A extends ActionsPayload>(
   { actions }: { actions: A }
 ): { actions: ReturnedActions<A>; state: S };
 function defineModule(name, state, vuexModule) {
-  if (module.hot) {
-    enableHotReload(name, state, vuexModule);
-  } else {
-    storeBuilder.registerModule(name, {
-      namespaced: true,
-      state,
-      ...vuexModule
-    });
-  }
+  enableHotReload(name, state, vuexModule);
+  storeBuilder.storeModule(name, state, vuexModule);
 
   const {
     registerGetters,
@@ -182,9 +237,9 @@ function defineModule(name, state, vuexModule) {
     actions: registerActions(vuexModule.actions),
     getters: registerGetters(vuexModule.getters),
     get state() {
-      return newState;
+      return newState()();
     }
   } as any;
 }
 
-export { storeBuilder, stateBuilder, defineModule, storedModules };
+export { storeBuilder, stateBuilder, defineModule };

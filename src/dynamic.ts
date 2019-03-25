@@ -1,6 +1,5 @@
 import { ReturnedGetters, ReturnedActions, ReturnedMutations } from "./types";
-import { storeBuilder, stateBuilder } from "./";
-import { storedModules } from "./builder";
+import { stateBuilder, storeBuilder } from "./builder";
 import { enableHotReload, disableHotReload } from "./hotModule";
 
 class registerDynamicModule {
@@ -30,20 +29,17 @@ class registerDynamicModule {
     });
   }
   public register() {
-    console.log(storedModules, storeBuilder);
-    storedModules[this.name] = {
-      namespaced: true,
-      ...this.Vuexmodule
-    };
-    if (!storeBuilder.state[this.name] && !this.registered) {
-      storeBuilder.registerModule(this.name, {
-        namespaced: true,
-        state: this.initialState,
-        ...this.Vuexmodule
-      });
+    storeBuilder.storeModule(this.name, this.initialState, this.Vuexmodule);
+
+    if (!storeBuilder.state[this.name]() && !this.registered) {
+      storeBuilder.registerModule(
+        this.name,
+        this.initialState,
+        this.Vuexmodule
+      );
       this.registered = true;
     }
-    if (storeBuilder.state[this.name]) {
+    if (storeBuilder.state[this.name]()) {
       const {
         registerGetters,
         registerMutations,

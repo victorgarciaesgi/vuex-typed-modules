@@ -86,15 +86,15 @@ rimraf@^2.6.3:
   dependencies:
     glob "^7.1.3"
 
+ts-optchain@^0.1.3:
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/ts-optchain/-/ts-optchain-0.1.3.tgz#f9e394f7ee4bdf55aec63aea6a321258a4404567"
+  integrity sha512-lWI+CJyJTP8oCRkpMOZzl67RduqNc6xxLssAa+F/1ryzWNHsmWmHSZJEKBGeRULsTbT/AduxpijF1IIp4gBN5A==
+
 typescript@^3.3.3333:
   version "3.3.3333"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.3.3333.tgz#171b2c5af66c59e9431199117a3bcadc66fdcfd6"
   integrity sha512-JjSKsAfuHBE/fB2oZ8NxtRTk5iGcg6hkYXMnZ3Wc+b2RSqejEqTaem11mHASMnFilHrax3sLK0GDzcJrekZYLw==
-
-vue@^2.6.8:
-  version "2.6.8"
-  resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.8.tgz#f21cbc536bfc14f7d1d792a137bb12f69e60ea91"
-  integrity sha512-+vp9lEC2Kt3yom673pzg1J7T1NVGuGzO9j8Wxno+rQN2WYVBX2pyo/RGQ3fXCLh2Pk76Skw/laAPCuBuEQ4diw==
 
 vuex@^3.1.0:
   version "3.1.0"

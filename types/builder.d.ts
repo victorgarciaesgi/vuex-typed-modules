@@ -1,11 +1,25 @@
+import { Store } from "vuex";
 import { ReturnedMutations, ReturnedActions, ReturnedGetters, MutationsPayload, ActionsPayload, GettersPayload } from "./types";
-declare const storeBuilder: import("vuex").Store<{}>;
-declare const storedModules: any;
+declare class storeConstructor {
+    private _store;
+    storedModules: any;
+    Store(storeConstructor: any): Store<any>;
+    storeModule(name: string, state: any, vuexModule: any): void;
+    deleteStoreModule(name: string): void;
+    readonly state: import("ts-optchain").OCType<any>;
+    readonly getters: import("ts-optchain").OCType<any>;
+    commit(fnName: string, payload: any): void;
+    dispatch(fnName: string, payload: any): void;
+    registerModule(name: string, state: any, modules: any): void;
+    unregisterModule(name: string): void;
+    hotUpdate(): void;
+}
+declare const storeBuilder: storeConstructor;
 declare function stateBuilder<S>(state: S, name: string): {
     registerMutations: <T extends MutationsPayload>(mutations: T) => ReturnedMutations<T>;
     registerActions: <T extends ActionsPayload>(actions: T) => ReturnedActions<T>;
     registerGetters: <T extends GettersPayload>(getters: T) => ReturnedGetters<T>;
-    state: any;
+    state: () => () => any;
 };
 declare function defineModule<S, M extends MutationsPayload, A extends ActionsPayload, G extends GettersPayload>(name: string, state: S, { actions, mutations, getters }: {
     actions: A;
@@ -53,4 +67,4 @@ declare function defineModule<S, A extends ActionsPayload>(name: string, state: 
     actions: ReturnedActions<A>;
     state: S;
 };
-export { storeBuilder, stateBuilder, defineModule, storedModules };
+export { storeBuilder, stateBuilder, defineModule };

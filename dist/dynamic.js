@@ -1,17 +1,5 @@
 "use strict";
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var _1 = require("./");
 var builder_1 = require("./builder");
 var hotModule_1 = require("./hotModule");
 var registerDynamicModule = (function () {
@@ -34,14 +22,13 @@ var registerDynamicModule = (function () {
         });
     }
     registerDynamicModule.prototype.register = function () {
-        console.log(builder_1.storedModules, _1.storeBuilder);
-        builder_1.storedModules[this.name] = __assign({ namespaced: true }, this.Vuexmodule);
-        if (!_1.storeBuilder.state[this.name] && !this.registered) {
-            _1.storeBuilder.registerModule(this.name, __assign({ namespaced: true, state: this.initialState }, this.Vuexmodule));
+        builder_1.storeBuilder.storeModule(this.name, this.initialState, this.Vuexmodule);
+        if (!builder_1.storeBuilder.state[this.name]() && !this.registered) {
+            builder_1.storeBuilder.registerModule(this.name, this.initialState, this.Vuexmodule);
             this.registered = true;
         }
-        if (_1.storeBuilder.state[this.name]) {
-            var _a = _1.stateBuilder(this.initialState, this.name), registerGetters = _a.registerGetters, registerMutations = _a.registerMutations, registerActions = _a.registerActions, newState = _a.state;
+        if (builder_1.storeBuilder.state[this.name]()) {
+            var _a = builder_1.stateBuilder(this.initialState, this.name), registerGetters = _a.registerGetters, registerMutations = _a.registerMutations, registerActions = _a.registerActions, newState = _a.state;
             (this.mutations = registerMutations(this.Vuexmodule.mutations)),
                 (this.actions = registerActions(this.Vuexmodule.actions)),
                 (this.getters = registerGetters(this.Vuexmodule.getters)),
@@ -50,7 +37,7 @@ var registerDynamicModule = (function () {
     };
     registerDynamicModule.prototype.unregister = function () {
         if (!module.hot) {
-            _1.storeBuilder.unregisterModule(this.name);
+            builder_1.storeBuilder.unregisterModule(this.name);
             hotModule_1.disableHotReload(this.name);
             this.mutations = {};
             this.actions = {};

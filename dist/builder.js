@@ -10,18 +10,64 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var vuex_1 = __importDefault(require("vuex"));
-var vue_1 = __importDefault(require("vue"));
 var hotModule_1 = require("./hotModule");
-vue_1.default.use(vuex_1.default);
-var storeBuilder = new vuex_1.default.Store({});
+var ts_optchain_1 = require("ts-optchain");
+var storeConstructor = (function () {
+    function storeConstructor() {
+        this.storedModules = {};
+    }
+    storeConstructor.prototype.Store = function (storeConstructor) {
+        this._store = new storeConstructor({
+            modules: this.storedModules
+        });
+        return this._store;
+    };
+    storeConstructor.prototype.storeModule = function (name, state, vuexModule) {
+        this.storedModules[name] = __assign({ namespaced: true, state: state }, vuexModule);
+    };
+    storeConstructor.prototype.deleteStoreModule = function (name) {
+        delete this.storedModules[name];
+    };
+    Object.defineProperty(storeConstructor.prototype, "state", {
+        get: function () {
+            return ts_optchain_1.oc(this._store).state;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(storeConstructor.prototype, "getters", {
+        get: function () {
+            return ts_optchain_1.oc(this._store).getters;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    storeConstructor.prototype.commit = function (fnName, payload) {
+        ts_optchain_1.oc(this._store).commit(function () { })(fnName, payload);
+    };
+    storeConstructor.prototype.dispatch = function (fnName, payload) {
+        ts_optchain_1.oc(this._store).dispatch()(fnName, payload);
+    };
+    storeConstructor.prototype.registerModule = function (name, state, modules) {
+        if (this._store) {
+            this._store.registerModule(name, __assign({ namespaced: true, state: state }, modules));
+        }
+    };
+    storeConstructor.prototype.unregisterModule = function (name) {
+        ts_optchain_1.oc(this._store).unregisterModule(function () { })(name);
+    };
+    storeConstructor.prototype.hotUpdate = function () {
+        if (this._store) {
+            this._store.hotUpdate({
+                modules: __assign({}, this.storedModules)
+            });
+        }
+    };
+    return storeConstructor;
+}());
+var storeBuilder = new storeConstructor();
 exports.storeBuilder = storeBuilder;
-var storedModules = {};
-exports.storedModules = storedModules;
 function functionNameError() {
     throw new Error("Function name not supported.\n  Causes: \n    -Production build with Uglyfication (see Readme)\n    -Arrow functions\n    -Old browser that don't supports function name");
 }
@@ -49,16 +95,17 @@ function createModuleTriggers(name, initialState) {
             functionNameError();
         }
         else {
-            return function () { return storeBuilder.getters[name + "/" + handler.name]; };
+            return function () { return storeBuilder.getters[name + "/" + handler.name](); };
         }
+    }
+    function state() {
+        return function () { return storeBuilder.state[name](); };
     }
     return {
         commit: commit,
         dispatch: dispatch,
         read: read,
-        get state() {
-            return storeBuilder.state[name];
-        }
+        state: state
     };
 }
 function stateBuilder(state, name) {
@@ -103,19 +150,15 @@ function stateBuilder(state, name) {
 }
 exports.stateBuilder = stateBuilder;
 function defineModule(name, state, vuexModule) {
-    if (module.hot) {
-        hotModule_1.enableHotReload(name, state, vuexModule);
-    }
-    else {
-        storeBuilder.registerModule(name, __assign({ namespaced: true, state: state }, vuexModule));
-    }
+    hotModule_1.enableHotReload(name, state, vuexModule);
+    storeBuilder.storeModule(name, state, vuexModule);
     var _a = stateBuilder(state, name), registerGetters = _a.registerGetters, registerMutations = _a.registerMutations, registerActions = _a.registerActions, newState = _a.state;
     return {
         mutations: registerMutations(vuexModule.mutations),
         actions: registerActions(vuexModule.actions),
         getters: registerGetters(vuexModule.getters),
         get state() {
-            return newState;
+            return newState()();
         }
     };
 }

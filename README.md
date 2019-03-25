@@ -71,9 +71,11 @@ Then in your `main.ts`
 
 ```typescript
 import { storeBuilder } from "vuex-typed-modules";
+Vue.use(Vuex);
+const store = storeBuilder.Store(Vuex.Store);
 
 new Vue({
-  store: storeBuilder,
+  store,
   render: h => h(App)
 }).$mount("#app");
 ```
