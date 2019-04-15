@@ -10,19 +10,6 @@ I decided to take it a bit further and eliminating all boilerplate for declarati
 
 It's working with dynamic modules too
 
-## Warning
-
-In production build on your `vue.config.js`, configure your uglifier to keep function name, otherwise it will not work
-
-```javascript
-new UglifyJsPlugin({
-  uglifyOptions: {
-    keep_fnames: true,
-  },
-}),
-```
-
-Also for IE 11 usage, you can add an `function name` polyfill
 
 ## Usage
 
@@ -70,9 +57,8 @@ export const testModule = defineModule("testModule", state, {
 Then in your `main.ts`
 
 ```typescript
-import { storeBuilder } from "vuex-typed-modules";
-Vue.use(Vuex);
-const store = storeBuilder.Store(Vuex.Store);
+import { createStore } from 'vuex-typed-modules';
+const store = createStore();
 
 new Vue({
   store,
@@ -143,6 +129,24 @@ export default class Home extends Vue {
   }
 }
 ```
+
+
+## Default module helpers
+
+Vuex types modules also add 2 helpers functions on top of your module
+
+```typescript
+YourModule.resetState()
+```
+will reset your module to the initial State
+
+```typescript
+YourModule.updateState({
+  count: 3
+})
+```
+Is like a mutation wrapper arround all your module state for simple state change (With type check too)
+
 
 ## Autocomplete and type safety exemple
 

@@ -1,4 +1,4 @@
-import { ReturnedGetters, ReturnedActions, ReturnedMutations } from "./types";
+import { ReturnedGetters, ReturnedActions, ReturnedMutations } from './types';
 declare function defineDynamicModule<S, M extends {
     [x: string]: (state: any, payload?: any) => void;
 }, A extends {

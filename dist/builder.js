@@ -10,111 +10,45 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+var vuex_1 = __importDefault(require("vuex"));
+var vue_1 = __importDefault(require("vue"));
 var hotModule_1 = require("./hotModule");
 var ts_optchain_1 = require("ts-optchain");
-var storeConstructor = (function () {
-    function storeConstructor() {
-        this.storedModules = {};
-    }
-    storeConstructor.prototype.Store = function (storeConstructor) {
-        this._store = new storeConstructor({
-            modules: this.storedModules
-        });
-        return this._store;
-    };
-    storeConstructor.prototype.storeModule = function (name, state, vuexModule) {
-        this.storedModules[name] = __assign({ namespaced: true, state: state }, vuexModule);
-    };
-    storeConstructor.prototype.deleteStoreModule = function (name) {
-        delete this.storedModules[name];
-    };
-    Object.defineProperty(storeConstructor.prototype, "state", {
-        get: function () {
-            return ts_optchain_1.oc(this._store).state;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(storeConstructor.prototype, "getters", {
-        get: function () {
-            return ts_optchain_1.oc(this._store).getters;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    storeConstructor.prototype.commit = function (fnName, payload) {
-        ts_optchain_1.oc(this._store).commit(function () { })(fnName, payload);
-    };
-    storeConstructor.prototype.dispatch = function (fnName, payload) {
-        ts_optchain_1.oc(this._store).dispatch()(fnName, payload);
-    };
-    storeConstructor.prototype.registerModule = function (name, state, modules) {
-        if (this._store) {
-            this._store.registerModule(name, __assign({ namespaced: true, state: state }, modules));
-        }
-    };
-    storeConstructor.prototype.unregisterModule = function (name) {
-        ts_optchain_1.oc(this._store).unregisterModule(function () { })(name);
-    };
-    storeConstructor.prototype.hotUpdate = function () {
-        if (this._store) {
-            this._store.hotUpdate({
-                modules: __assign({}, this.storedModules)
-            });
-        }
-    };
-    return storeConstructor;
-}());
-var storeBuilder = new storeConstructor();
+vue_1.default.use(vuex_1.default);
+var storeBuilder = null;
 exports.storeBuilder = storeBuilder;
-function functionNameError() {
-    throw new Error("Function name not supported.\n  Causes: \n    -Production build with Uglyfication (see Readme)\n    -Arrow functions\n    -Old browser that don't supports function name");
-}
-function createModuleTriggers(name, initialState) {
-    function commit(handler) {
-        if (!handler.name) {
-            functionNameError();
-        }
-        else {
-            return function (payload) { return storeBuilder.commit(name + "/" + handler.name, payload); };
-        }
+var storedModules = {};
+exports.storedModules = storedModules;
+function createModuleTriggers(moduleName) {
+    function commit(name) {
+        return function (payload) { return storeBuilder.commit(moduleName + "/" + name, payload); };
     }
-    function dispatch(handler) {
-        if (!handler.name) {
-            functionNameError();
-        }
-        else {
-            return function (payload) {
-                return storeBuilder.dispatch(name + "/" + handler.name, payload);
-            };
-        }
+    function dispatch(name) {
+        return function (payload) { return storeBuilder.dispatch(moduleName + "/" + name, payload); };
     }
-    function read(handler) {
-        if (!handler.name) {
-            functionNameError();
-        }
-        else {
-            return function () { return storeBuilder.getters[name + "/" + handler.name](); };
-        }
-    }
-    function state() {
-        return function () { return storeBuilder.state[name](); };
+    function read(name) {
+        return function () { return ts_optchain_1.oc(storeBuilder).getters[moduleName + "/" + name](); };
     }
     return {
         commit: commit,
         dispatch: dispatch,
         read: read,
-        state: state
+        get state() {
+            return function () { return ts_optchain_1.oc(storeBuilder).state[moduleName]; };
+        }
     };
 }
 function stateBuilder(state, name) {
-    var b = createModuleTriggers(name, state);
+    var b = createModuleTriggers(name);
     var registerMutations = function (mutations) {
         var renderedMutations = {};
         if (mutations) {
-            Object.keys(mutations).map(function (m) {
-                renderedMutations[m] = b.commit(mutations[m]);
+            Object.keys(mutations).map(function (key) {
+                renderedMutations[key] = b.commit(key);
             });
         }
         return renderedMutations;
@@ -122,8 +56,8 @@ function stateBuilder(state, name) {
     var registerActions = function (actions) {
         var renderedActions = {};
         if (actions) {
-            Object.keys(actions).map(function (m) {
-                renderedActions[m] = b.dispatch(actions[m]);
+            Object.keys(actions).map(function (key) {
+                renderedActions[key] = b.dispatch(key);
             });
         }
         return renderedActions;
@@ -131,10 +65,10 @@ function stateBuilder(state, name) {
     var registerGetters = function (getters) {
         var renderedGetters = {};
         if (getters) {
-            Object.keys(getters).map(function (m) {
-                Object.defineProperty(renderedGetters, m, {
+            Object.keys(getters).map(function (key) {
+                Object.defineProperty(renderedGetters, key, {
                     get: function () {
-                        return b.read(getters[m])();
+                        return b.read(key)();
                     }
                 });
             });
@@ -150,16 +84,56 @@ function stateBuilder(state, name) {
 }
 exports.stateBuilder = stateBuilder;
 function defineModule(name, state, vuexModule) {
-    hotModule_1.enableHotReload(name, state, vuexModule);
-    storeBuilder.storeModule(name, state, vuexModule);
+    if (!vuexModule.mutations)
+        vuexModule.mutations = {};
+    vuexModule.mutations.resetState = function (moduleState) {
+        Object.keys(state).map(function (key) {
+            vue_1.default.set(moduleState, key, state[key]);
+        });
+    };
+    vuexModule.mutations.updateState = function (moduleState, params) {
+        Object.keys(params).map(function (key) {
+            vue_1.default.set(moduleState, key, params[key]);
+        });
+    };
+    if (module.hot) {
+        hotModule_1.enableHotReload(name, state, vuexModule);
+    }
+    else {
+        storedModules[name] = __assign({ namespaced: true, state: state }, vuexModule);
+    }
     var _a = stateBuilder(state, name), registerGetters = _a.registerGetters, registerMutations = _a.registerMutations, registerActions = _a.registerActions, newState = _a.state;
     return {
         mutations: registerMutations(vuexModule.mutations),
         actions: registerActions(vuexModule.actions),
         getters: registerGetters(vuexModule.getters),
+        resetState: function () {
+            storeBuilder.commit(name + "/resetState");
+        },
+        updateState: function (params) {
+            storeBuilder.commit(name + "/updateState", params);
+        },
         get state() {
             return newState()();
         }
     };
 }
 exports.defineModule = defineModule;
+function createStore() {
+    exports.storeBuilder = storeBuilder = new vuex_1.default.Store({
+        strict: false,
+        modules: storedModules
+    });
+    storeBuilder.subscribeAction({
+        before: function (action, state) {
+            var moduleName = action.type.split("/")[0];
+            var type = action.type.split("/")[1];
+            console.groupCollapsed("%c Vuex Action %c " + moduleName + " %c " + type + " %c", "background: #451382 ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff", "background:#fff;padding: 1px;color: #451382", "background:#2788d2;padding: 1px;border-radius: 0 3px 3px 0;color: #fff", "background:transparent");
+            console.log("PAYLOAD", action.payload);
+            console.log("STATE", state);
+            console.groupEnd();
+        }
+    });
+    return storeBuilder;
+}
+exports.createStore = createStore;

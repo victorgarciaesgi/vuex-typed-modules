@@ -1,5 +1,6 @@
 import { ReturnedGetters, ReturnedActions, ReturnedMutations } from "./types";
-import { stateBuilder, storeBuilder } from "./builder";
+import { storeBuilder, stateBuilder } from "./builder";
+import { storedModules } from "./builder";
 import { enableHotReload, disableHotReload } from "./hotModule";
 
 class registerDynamicModule {
@@ -29,17 +30,20 @@ class registerDynamicModule {
     });
   }
   public register() {
-    storeBuilder.storeModule(this.name, this.initialState, this.Vuexmodule);
-
-    if (!storeBuilder.state[this.name]() && !this.registered) {
-      storeBuilder.registerModule(
-        this.name,
-        this.initialState,
-        this.Vuexmodule
-      );
+    storedModules[this.name] = {
+      namespaced: true,
+      state: this.initialState,
+      ...this.Vuexmodule
+    };
+    if (!storeBuilder.state[this.name] && !this.registered) {
+      storeBuilder.registerModule(this.name, {
+        namespaced: true,
+        state: this.initialState,
+        ...this.Vuexmodule
+      });
       this.registered = true;
     }
-    if (storeBuilder.state[this.name]()) {
+    if (storeBuilder.state[this.name]) {
       const {
         registerGetters,
         registerMutations,
@@ -81,6 +85,8 @@ function defineDynamicModule<
   state: S;
   register(): void;
   unregister(): void;
+  resetState(): void;
+  updateState(params: Partial<S>): void;
 };
 function defineDynamicModule<
   S,
@@ -96,6 +102,8 @@ function defineDynamicModule<
   state: S;
   register(): void;
   unregister(): void;
+  resetState(): void;
+  updateState(params: Partial<S>): void;
 };
 function defineDynamicModule<
   S,
@@ -111,6 +119,8 @@ function defineDynamicModule<
   state: S;
   register(): void;
   unregister(): void;
+  resetState(): void;
+  updateState(params: Partial<S>): void;
 };
 function defineDynamicModule<
   S,
@@ -126,6 +136,8 @@ function defineDynamicModule<
   state: S;
   register(): void;
   unregister(): void;
+  resetState(): void;
+  updateState(params: Partial<S>): void;
 };
 function defineDynamicModule<
   S,
@@ -139,6 +151,8 @@ function defineDynamicModule<
   state: S;
   register(): void;
   unregister(): void;
+  resetState(): void;
+  updateState(params: Partial<S>): void;
 };
 function defineDynamicModule<
   S,
@@ -152,6 +166,8 @@ function defineDynamicModule<
   state: S;
   register(): void;
   unregister(): void;
+  resetState(): void;
+  updateState(params: Partial<S>): void;
 };
 function defineDynamicModule(name, state, vuexModule) {
   enableHotReload(name, state, vuexModule, true);
