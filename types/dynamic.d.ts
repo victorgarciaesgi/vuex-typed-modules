@@ -1,4 +1,4 @@
-import { ReturnedGetters, ReturnedActions, ReturnedMutations } from './types';
+import { ReturnedGetters, ReturnedActions, ReturnedMutations } from "./types";
 declare function defineDynamicModule<S, M extends {
     [x: string]: (state: any, payload?: any) => void;
 }, A extends {
@@ -16,6 +16,8 @@ declare function defineDynamicModule<S, M extends {
     state: S;
     register(): void;
     unregister(): void;
+    resetState(): void;
+    updateState(params: Partial<S>): void;
 };
 declare function defineDynamicModule<S, M extends {
     [x: string]: (state: any, payload?: any) => void;
@@ -30,6 +32,8 @@ declare function defineDynamicModule<S, M extends {
     state: S;
     register(): void;
     unregister(): void;
+    resetState(): void;
+    updateState(params: Partial<S>): void;
 };
 declare function defineDynamicModule<S, M extends {
     [x: string]: (state: any, payload?: any) => void;
@@ -44,6 +48,8 @@ declare function defineDynamicModule<S, M extends {
     state: S;
     register(): void;
     unregister(): void;
+    resetState(): void;
+    updateState(params: Partial<S>): void;
 };
 declare function defineDynamicModule<S, A extends {
     [x: string]: (context: any, payload?: any) => any;
@@ -58,6 +64,8 @@ declare function defineDynamicModule<S, A extends {
     state: S;
     register(): void;
     unregister(): void;
+    resetState(): void;
+    updateState(params: Partial<S>): void;
 };
 declare function defineDynamicModule<S, M extends {
     [x: string]: (state: any, payload?: any) => void;
@@ -68,6 +76,8 @@ declare function defineDynamicModule<S, M extends {
     state: S;
     register(): void;
     unregister(): void;
+    resetState(): void;
+    updateState(params: Partial<S>): void;
 };
 declare function defineDynamicModule<S, A extends {
     [x: string]: (context: any, payload?: any) => any;
@@ -78,5 +88,7 @@ declare function defineDynamicModule<S, A extends {
     state: S;
     register(): void;
     unregister(): void;
+    resetState(): void;
+    updateState(params: Partial<S>): void;
 };
 export { defineDynamicModule };

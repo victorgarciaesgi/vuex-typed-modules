@@ -1,4 +1,4 @@
-import { Store } from "vuex";
+import { Store, StoreOptions } from "vuex";
 import { ReturnedMutations, ReturnedActions, ReturnedGetters, MutationsPayload, ActionsPayload, GettersPayload } from "./types";
 declare let storeBuilder: Store<any>;
 declare const storedModules: any;
@@ -66,5 +66,5 @@ declare function defineModule<S, A extends ActionsPayload>(name: string, state: 
     resetState(): void;
     updateState(params: Partial<S>): void;
 };
-declare function createStore(): Store<any>;
+declare function createStore({ strict, ...options }: StoreOptions<any>): Store<any>;
 export { storeBuilder, createStore, stateBuilder, defineModule, storedModules };

@@ -24,13 +24,13 @@ var registerDynamicModule = (function () {
         this.Vuexmodule = Vuexmodule;
         this.name = name;
         this.initialState = state;
-        Object.defineProperty(this, 'state', {
+        Object.defineProperty(this, "state", {
             get: function () {
                 return this.newState;
             },
             set: function (value) {
                 this.newState = value;
-            },
+            }
         });
     }
     registerDynamicModule.prototype.register = function () {

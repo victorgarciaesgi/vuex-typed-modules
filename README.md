@@ -10,14 +10,21 @@ I decided to take it a bit further and eliminating all boilerplate for declarati
 
 It's working with dynamic modules too
 
+It also comes with an vuex action logger
 
-## Usage
+![actionsloggers](https://github.com/victorgarciaesgi/Vuex-typed-modules/blob/master/captures/actionlogger.png?raw=true)
+
+
+## Installation
 
 ```bash
 npm i vuex-typed-modules
 #or
 yarn add vuex-typed-modules
 ```
+
+# Usage 
+
 
 ## Define Module
 
@@ -58,7 +65,7 @@ Then in your `main.ts`
 
 ```typescript
 import { createStore } from 'vuex-typed-modules';
-const store = createStore();
+const store = createStore({/* Vuex store options */});
 
 new Vue({
   store,
@@ -166,6 +173,3 @@ And it keeps the call signature of the original function
 
 ![autocomplete4](https://github.com/victorgarciaesgi/Vuex-typed-modules/blob/master/captures/autocomplete4.png?raw=true)
 
-```
-
-```

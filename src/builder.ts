@@ -1,4 +1,4 @@
-import Vuex, { Store } from "vuex";
+import Vuex, { Store, StoreOptions } from "vuex";
 import Vue from "vue";
 import {
   ReturnedMutations,
@@ -205,9 +205,10 @@ function defineModule(name, state, vuexModule) {
   } as any;
 }
 
-function createStore() {
+function createStore({ strict = false, ...options }: StoreOptions<any>) {
   storeBuilder = new Vuex.Store({
-    strict: false,
+    strict,
+    ...options,
     modules: storedModules
   });
   storeBuilder.subscribeAction({
