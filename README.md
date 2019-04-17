@@ -14,7 +14,6 @@ It also comes with an vuex action logger
 
 ![actionsloggers](https://github.com/victorgarciaesgi/Vuex-typed-modules/blob/master/captures/actionlogger.png?raw=true)
 
-
 ## Installation
 
 ```bash
@@ -23,8 +22,7 @@ npm i vuex-typed-modules
 yarn add vuex-typed-modules
 ```
 
-# Usage 
-
+# Usage
 
 ## Define Module
 
@@ -53,9 +51,19 @@ const mutations = {
   }
 };
 
+const actions = {
+  async addCountAsync(context, count: number): Promise<void> {
+    await myAsyncFunction(count);
+
+    // Call tour mutation
+    testModule.mutations.addCount(count);
+  }
+};
+
 export const testModule = defineModule("testModule", state, {
   getters,
-  mutations
+  mutations,
+  actions
 });
 ```
 
@@ -64,8 +72,10 @@ export const testModule = defineModule("testModule", state, {
 Then in your `main.ts`
 
 ```typescript
-import { createStore } from 'vuex-typed-modules';
-const store = createStore({/* Vuex store options */});
+import { createStore } from "vuex-typed-modules";
+const store = createStore({
+  /* Vuex store options */
+});
 
 new Vue({
   store,
@@ -95,7 +105,7 @@ export default class Home extends Vue {
   }
 
   increment() {
-    testModule.mutations.addCount(2);
+    testModule.actions.addCountAsync(2);
   }
 }
 ```
@@ -137,23 +147,23 @@ export default class Home extends Vue {
 }
 ```
 
-
 ## Default module helpers
 
 Vuex types modules also add 2 helpers functions on top of your module
 
 ```typescript
-YourModule.resetState()
+YourModule.resetState();
 ```
+
 will reset your module to the initial State
 
 ```typescript
 YourModule.updateState({
   count: 3
-})
+});
 ```
-Is like a mutation wrapper arround all your module state for simple state change (With type check too)
 
+Is like a mutation wrapper arround all your module state for simple state change (With type check too)
 
 ## Autocomplete and type safety exemple
 
@@ -172,4 +182,3 @@ It shows correctly what each function returns
 And it keeps the call signature of the original function
 
 ![autocomplete4](https://github.com/victorgarciaesgi/Vuex-typed-modules/blob/master/captures/autocomplete4.png?raw=true)
-

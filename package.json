@@ -28,15 +28,18 @@
   "typings": "types/index.d.ts",
   "license": "MIT",
   "peerDependencies": {
-    "vuex": "^3.1.0"
+    "vue": "~2.3.0",
+    "vuex": "^3.1.0",
+    "ts-optchain": "^0.1.6"
   },
   "devDependencies": {
     "@types/node": "^11.11.3",
     "@types/webpack-env": "^1.13.9",
     "rimraf": "^2.6.3",
-    "ts-optchain": "^0.1.3",
     "typescript": "^3.3.3333",
-    "vuex": "^3.1.0"
+    "vuex": "^3.1.0",
+    "vue": "2.6.10",
+    "ts-optchain": "^0.1.6"
   },
   "repository": {
     "type": "git",

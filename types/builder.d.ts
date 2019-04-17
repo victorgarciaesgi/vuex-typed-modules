@@ -6,7 +6,7 @@ declare function stateBuilder<S>(state: S, name: string): {
     registerMutations: <T extends MutationsPayload>(mutations: T) => ReturnedMutations<T>;
     registerActions: <T extends ActionsPayload>(actions: T) => ReturnedActions<T>;
     registerGetters: <T extends GettersPayload>(getters: T) => ReturnedGetters<T>;
-    state: () => any;
+    state: () => import("ts-optchain").TSOCAny;
 };
 declare function defineModule<S, M extends MutationsPayload, A extends ActionsPayload, G extends GettersPayload>(name: string, state: S, { actions, mutations, getters }: {
     actions: A;
