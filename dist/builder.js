@@ -23,8 +23,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var vuex_1 = __importDefault(require("vuex"));
-var vue_1 = __importDefault(require("vue"));
+var vuex_1 = __importDefault(require("../../vuex"));
+var vue_1 = __importDefault(require("../../vue"));
 var hotModule_1 = require("./hotModule");
 var ts_optchain_1 = require("ts-optchain");
 vue_1.default.use(vuex_1.default);
@@ -47,7 +47,7 @@ function createModuleTriggers(moduleName) {
         dispatch: dispatch,
         read: read,
         get state() {
-            return function () { return ts_optchain_1.oc(storeBuilder).state[moduleName]; };
+            return function () { return storeBuilder.state[moduleName]; };
         }
     };
 }
@@ -123,7 +123,7 @@ function defineModule(name, state, vuexModule) {
             storeBuilder.commit(name + "/updateState", params);
         },
         get state() {
-            return newState()();
+            return newState();
         }
     };
 }

@@ -1,4 +1,4 @@
-import { Store, StoreOptions } from "vuex";
+import { Store, StoreOptions } from "../../vuex";
 import { ReturnedMutations, ReturnedActions, ReturnedGetters, MutationsPayload, ActionsPayload, GettersPayload } from "./types";
 declare let storeBuilder: Store<any>;
 declare const storedModules: any;
@@ -6,7 +6,7 @@ declare function stateBuilder<S>(state: S, name: string): {
     registerMutations: <T extends MutationsPayload>(mutations: T) => ReturnedMutations<T>;
     registerActions: <T extends ActionsPayload>(actions: T) => ReturnedActions<T>;
     registerGetters: <T extends GettersPayload>(getters: T) => ReturnedGetters<T>;
-    state: () => import("ts-optchain").TSOCAny;
+    state: () => any;
 };
 declare function defineModule<S, M extends MutationsPayload, A extends ActionsPayload, G extends GettersPayload>(name: string, state: S, { actions, mutations, getters }: {
     actions: A;
@@ -66,5 +66,5 @@ declare function defineModule<S, A extends ActionsPayload>(name: string, state: 
     resetState(): void;
     updateState(params: Partial<S>): void;
 };
-declare function createStore({ strict, ...options }: StoreOptions<any>): Store<any>;
+declare function createStore({ strict, ...options }: StoreOptions<any>): any;
 export { storeBuilder, createStore, stateBuilder, defineModule, storedModules };

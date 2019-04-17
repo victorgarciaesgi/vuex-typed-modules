@@ -1,5 +1,5 @@
-import Vuex, { Store, StoreOptions } from "vuex";
-import Vue from "vue";
+import Vuex, { Store, StoreOptions } from "../../vuex";
+import Vue from "../../vue";
 import {
   ReturnedMutations,
   ReturnedActions,
@@ -34,7 +34,7 @@ function createModuleTriggers(moduleName: string) {
     dispatch,
     read,
     get state() {
-      return () => oc(storeBuilder).state[moduleName];
+      return () => storeBuilder.state[moduleName];
     }
   };
 }
@@ -200,7 +200,7 @@ function defineModule(name, state, vuexModule) {
       storeBuilder.commit(`${name}/updateState`, params);
     },
     get state() {
-      return newState()();
+      return newState();
     }
   } as any;
 }
