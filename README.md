@@ -55,7 +55,7 @@ const actions = {
   async addCountAsync(context, count: number): Promise<void> {
     await myAsyncFunction(count);
 
-    // Call tour mutation
+    // Calling mutation
     testModule.mutations.addCount(count);
   }
 };
