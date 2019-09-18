@@ -1,6 +1,6 @@
 {
   "name": "vuex-typed-modules",
-  "version": "1.0.21",
+  "version": "2.0.0",
   "description": "A typescript wrapper for Vuex store with fully typed exposure",
   "keywords": [
     "vuex",
@@ -19,10 +19,10 @@
   "files": [
     "dist",
     "types/index.d.ts",
-    "types/builder.d.ts",
-    "types/dynamic.d.ts",
+    "types/Database.d.ts",
+    "types/Helpers.d.ts",
     "types/types.d.ts",
-    "types/hotModule.d.ts"
+    "types/Modules.d.ts"
   ],
   "main": "dist/index.js",
   "typings": "types/index.d.ts",
@@ -31,14 +31,15 @@
     "vue": "~2.6.10",
     "vuex": "~3.1.0"
   },
+  "devDependencies": {
+    "@types/node": "^12.7.5",
+    "@types/webpack-env": "^1.14.0",
+    "rimraf": "^3.0.0"
+  },
   "dependencies": {
-    "@types/node": "^11.11.3",
-    "@types/webpack-env": "^1.13.9",
-    "rimraf": "^2.6.3",
-    "typescript": "^3.3.3333",
+    "typescript": "^3.5.0",
     "vuex": "^3.1.0",
-    "vue": "2.6.10",
-    "ts-optchain": "^0.1.6"
+    "vue": "2.6.10"
   },
   "repository": {
     "type": "git",

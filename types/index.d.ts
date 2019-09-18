@@ -1,3 +1,2 @@
-import { defineModule, createStore, storeBuilder } from './builder';
-import { defineDynamicModule } from './dynamic';
-export { defineModule, storeBuilder, createStore, defineDynamicModule };
+export { Database } from './Database';
+export { VuexModule } from './Module';

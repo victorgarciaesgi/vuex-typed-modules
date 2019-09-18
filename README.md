@@ -1,14 +1,12 @@
 # Vuex-typed-modules
 
-A VueX wrapper to fully type your modules without more boilerplate and out of the box Hot Module Replacement
+A VueX wrapper to fully type your modules without more boilerplate
 
-![hotmodule](https://github.com/victorgarciaesgi/Vuex-typed-modules/blob/master/captures/hotmodule.png?raw=true)
 
 I'm realy greatly inspired by [@mrcrowl](https://github.com/mrcrowl) work and his lib [vuex-typex](https://github.com/mrcrowl/vuex-typex)
 
 I decided to take it a bit further and eliminating all boilerplate for declarating modules
 
-It's working with dynamic modules too
 
 It also comes with an vuex action logger
 
@@ -31,39 +29,24 @@ Create a `test.module.ts` in your store folder
 ```typescript
 import { defineModule } from "vuex-typed-modules";
 
-interface ItestState {
-  count: number;
-}
-
-const state: ItestState = {
-  count: 1
-};
-
-const getters = {
-  count(state: ItestState) {
-    return state.count;
-  }
-};
-
-const mutations = {
-  addCount(state: ItestState, number: number) {
-    state.count += number;
-  }
-};
-
-const actions = {
-  async addCountAsync(context, count: number): Promise<void> {
-    await myAsyncFunction(count);
-
+export const testModule = new VuexModule({
+  name: 'testModule',
+  state: {
+    count: 1,
+  },
+  mutations: {
+    addCount(state, number: number) {
+      state.count += number;
+    }
+  },
+  actions: {
+    async addCountAsync(context, count: number): Promise<void> {
+      await myAsyncFunction(count);
     // Calling mutation
-    testModule.mutations.addCount(count);
-  }
-};
+      testModule.mutations.addCount(count);
+    }
 
-export const testModule = defineModule("testModule", state, {
-  getters,
-  mutations,
-  actions
+  },
 });
 ```
 
@@ -72,10 +55,13 @@ export const testModule = defineModule("testModule", state, {
 Then in your `main.ts`
 
 ```typescript
-import { createStore } from "vuex-typed-modules";
-const store = createStore({
-  /* Vuex store options */
-});
+import { Database } from "vuex-typed-modules";
+import { testModule } from '~modules'
+
+const database = new Database({ logger: true });
+const store = new Vuex.Store({
+  plugins: [database.deploy([testModule])];
+})
 
 new Vue({
   store,
@@ -96,7 +82,7 @@ new Vue({
 
 ```typescript
 import { Component, Prop, Vue } from "vue-property-decorator";
-import { testModule } from "@/store/test.module";
+import { testModule } from "~/modules";
 
 @Component
 export default class Home extends Vue {
@@ -104,8 +90,8 @@ export default class Home extends Vue {
     return testModule.getters.count;
   }
 
-  increment() {
-    testModule.actions.addCountAsync(2);
+  async increment() {
+    await testModule.actions.addCountAsync(2);
   }
 }
 ```
@@ -122,30 +108,6 @@ export const testModule = defineDynamicModule("testModule", state, {
 ```
 
 Then in your component when you need to activate the module
-
-```typescript
-import { Component, Prop, Vue } from "vue-property-decorator";
-import { testModule } from "@/store/test.module";
-
-@Component
-export default class Home extends Vue {
-  get count() {
-    return testModule.getters.count;
-  }
-
-  increment() {
-    testModule.mutations.addCount(2);
-  }
-
-  created() {
-    testModule.register();
-  }
-
-  destroyed() {
-    testModule.unregister();
-  }
-}
-```
 
 ## Default module helpers
 
