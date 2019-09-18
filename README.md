@@ -27,7 +27,7 @@ yarn add vuex-typed-modules
 Create a `test.module.ts` in your store folder
 
 ```typescript
-import { defineModule } from "vuex-typed-modules";
+import { VuexModule } from "vuex-typed-modules";
 
 export const testModule = new VuexModule({
   name: 'testModule',
