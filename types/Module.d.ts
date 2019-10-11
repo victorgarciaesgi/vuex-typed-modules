@@ -1,5 +1,5 @@
-import * as Vuex from "vuex";
-import { ActionsTree, GettersTree, ReturnedGetters, ReturnedActions, ReturnedMutations, SharedMutations, MutationsTree } from "./types";
+import * as Vuex from 'vuex';
+import { ActionsTree, GettersTree, ReturnedGetters, ReturnedActions, ReturnedMutations, SharedMutations, MutationsTree } from './types';
 export declare class VuexModule<S = any, M extends MutationsTree<S> = any, G extends GettersTree<S> = any, A extends ActionsTree = any> {
     private name;
     private _initialState;
@@ -11,7 +11,7 @@ export declare class VuexModule<S = any, M extends MutationsTree<S> = any, G ext
     mutations: ReturnedMutations<M>;
     state: S;
     helpers: SharedMutations<S>;
-    constructor({ name, state, actions, getters, mutations }: {
+    constructor({ name, state, actions, getters, mutations, }: {
         name: string;
         state: S;
         getters?: G;

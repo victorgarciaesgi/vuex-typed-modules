@@ -1,6 +1,6 @@
-import * as Vuex from "vuex";
-import { VuexModule } from "./Module";
-import { setHelpers } from "./Helpers";
+import * as Vuex from 'vuex';
+import { VuexModule } from './Module';
+import { setHelpers } from './Helpers';
 
 interface DataBaseOptions {
   logger?: boolean;
@@ -24,17 +24,8 @@ export class Database {
       }
       if (mutations == null && mutations === undefined) {
         mutations = {};
-        setHelpers(mutations, state);
       }
-
-      this.store.registerModule(name, {
-        namespaced: true,
-        actions,
-        getters,
-        mutations,
-        state
-      });
-
+      setHelpers(mutations, state);
       vuexmodule.register(this.store);
     });
   }
@@ -48,21 +39,23 @@ export class Database {
   }
 
   private createLogger() {
-    this.store.subscribeAction({
-      before: (action, state) => {
-        const moduleName = action.type.split("/")[0];
-        const type = action.type.split("/")[1];
-        console.groupCollapsed(
-          `%c Vuex Action %c ${moduleName} %c ${type} %c`,
-          "background: #451382 ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff",
-          "background:#fff;padding: 1px;color: #451382",
-          "background:#2788d2;padding: 1px;border-radius: 0 3px 3px 0;color: #fff",
-          "background:transparent"
-        );
-        console.log("PAYLOAD", action.payload);
-        console.log("STATE", state);
-        console.groupEnd();
-      }
-    });
+    if (this.options.logger) {
+      this.store.subscribeAction({
+        before: (action, state) => {
+          const moduleName = action.type.split('/')[0];
+          const type = action.type.split('/')[1];
+          console.groupCollapsed(
+            `%c Vuex Action %c ${moduleName} %c ${type} %c`,
+            'background: #451382 ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff',
+            'background:#fff;padding: 1px;color: #451382',
+            'background:#2788d2;padding: 1px;border-radius: 0 3px 3px 0;color: #fff',
+            'background:transparent'
+          );
+          console.log('PAYLOAD', action.payload);
+          console.log('STATE', state);
+          console.groupEnd();
+        },
+      });
+    }
   }
 }

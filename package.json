@@ -1,6 +1,6 @@
 {
   "name": "vuex-typed-modules",
-  "version": "2.0.1",
+  "version": "2.0.93",
   "description": "A typescript wrapper for Vuex store with fully typed exposure",
   "keywords": [
     "vuex",
@@ -18,11 +18,7 @@
   },
   "files": [
     "dist",
-    "types/index.d.ts",
-    "types/Database.d.ts",
-    "types/Helpers.d.ts",
-    "types/types.d.ts",
-    "types/Modules.d.ts"
+    "types"
   ],
   "main": "dist/index.js",
   "typings": "types/index.d.ts",
@@ -38,8 +34,8 @@
   },
   "dependencies": {
     "typescript": "^3.5.0",
-    "vuex": "^3.1.0",
-    "vue": "2.6.10"
+    "vue": "2.6.10",
+    "vuex": "^3.1.0"
   },
   "repository": {
     "type": "git",
@@ -49,6 +45,7 @@
   "scripts": {
     "clean": "rimraf dist && rimraf types",
     "compile": "tsc --pretty",
-    "build": "npm run clean && npm run compile"
+    "build": "npm run clean && npm run compile",
+    "prepublish": "yarn build"
   }
 }

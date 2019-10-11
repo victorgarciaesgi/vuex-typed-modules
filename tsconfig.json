@@ -14,7 +14,7 @@
     "sourceMap": false,
     "downlevelIteration": true,
     "skipLibCheck": true,
-    "declarationDir": "types",
+    "declarationDir": "./types",
     "baseUrl": ".",
     "declaration": true,
     "paths": {

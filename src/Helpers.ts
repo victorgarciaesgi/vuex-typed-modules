@@ -23,7 +23,7 @@ export const setHelpers = (mutations: MutationsTree<any>, state: any) => {
     Vue.set(moduleState, key, moduleState[key].filter(f => f.id !== id));
   };
   mutations.addListItem = (moduleState, { key, data }) => {
-    Vue.set(moduleState, key, moduleState[key].push(data));
+    Vue.set(moduleState, key, [...moduleState[key], data]);
   };
   mutations.concatList = (moduleState, { key, data }) => {
     Vue.set(moduleState, key, moduleState[key].concat(data));
@@ -39,7 +39,7 @@ export const buildHelpers = (store: Vuex.Store<any>, name: string) => {
       store.commit(`${name}/updateState`, params);
     },
     addListItem(key, data) {
-      store.commit(`${name}/updateListItem`, { key, data });
+      store.commit(`${name}/addListItem`, { key, data });
     },
     updateListItem(key, id, data) {
       store.commit(`${name}/updateListItem`, { key, id, data });

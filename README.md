@@ -29,23 +29,24 @@ Create a `test.module.ts` in your store folder
 ```typescript
 import { VuexModule } from "vuex-typed-modules";
 
+const mutations = {
+  addCount(state, number: number) {
+    state.count += number;
+  }
+},
+
+const actions = {
+  async addCountAsync(context, count: number): Promise<void> {
+    await myAsyncFunction(count);
+  // Calling mutation
+    testModule.mutations.addCount(count);
+  }
+},
+
 export const testModule = new VuexModule({
   name: 'testModule',
   state: {
     count: 1,
-  },
-  mutations: {
-    addCount(state, number: number) {
-      state.count += number;
-    }
-  },
-  actions: {
-    async addCountAsync(context, count: number): Promise<void> {
-      await myAsyncFunction(count);
-    // Calling mutation
-      testModule.mutations.addCount(count);
-    }
-
   },
 });
 ```

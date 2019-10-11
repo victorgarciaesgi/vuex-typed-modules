@@ -1,5 +1,5 @@
-import * as Vuex from "vuex";
-import { VuexModule } from "./Module";
+import * as Vuex from 'vuex';
+import { VuexModule } from './Module';
 interface DataBaseOptions {
     logger?: boolean;
 }
