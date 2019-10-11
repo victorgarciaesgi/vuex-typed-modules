@@ -12,9 +12,9 @@ export function createModuleLayers(store: Vuex.Store<any>, moduleName: string) {
   function read(name) {
     return () => {
       if (store) {
-        return store.getters[moduleName + '/' + name]();
+        return store.getters[moduleName + '/' + name];
       }
-      return null;
+      return () => {};
     };
   }
 
@@ -56,6 +56,8 @@ export function buildModifiers(store: Vuex.Store<any>, name: string) {
     if (getters) {
       Object.keys(getters).forEach((key: any) => {
         Object.defineProperty(renderedGetters, key, {
+          enumerable: true,
+          configurable: true,
           get() {
             return read(key)();
           },
