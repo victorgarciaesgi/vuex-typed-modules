@@ -17,15 +17,6 @@ export class Database {
 
   private install(vuexModules: VuexModule[]): void {
     vuexModules.forEach(vuexmodule => {
-      let { name, actions, getters, mutations, state } = vuexmodule.extract();
-      if (this.modules.find(mod => mod.name === name)) {
-        console.error(`A module with the name ${name} already exists`);
-        return;
-      }
-      if (mutations == null && mutations === undefined) {
-        mutations = {};
-      }
-      setHelpers(mutations, state);
       vuexmodule.register(this.store);
     });
   }

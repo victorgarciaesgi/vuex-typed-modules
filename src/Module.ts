@@ -9,7 +9,7 @@ import {
   MutationsTree,
 } from './types';
 import { buildModifiers } from './modifiers';
-import { buildHelpers } from './Helpers';
+import { buildHelpers, setHelpers } from './Helpers';
 
 export interface VuexModuleArgs<S, G, M, A> {
   name: string;
@@ -39,14 +39,7 @@ export class VuexModule<
   public state: S;
   public helpers: SharedMutations<S>;
 
-  constructor({
-    name,
-    state,
-    actions,
-    getters,
-    mutations,
-    dynamic = false,
-  }: VuexModuleArgs<S, G, M, A>) {
+  constructor({ name, state, actions, getters, mutations }: VuexModuleArgs<S, G, M, A>) {
     this.name = name;
     this._initialState = state;
     this._getters = getters;
@@ -63,10 +56,17 @@ export class VuexModule<
       mutations: this._mutations,
     };
   }
-
-  public register(store: Vuex.Store<any>) {
+  protected activate(store: Vuex.Store<any>, namespace?: string): void {
     let { name, actions, getters, mutations, state } = this.extract();
-    store.registerModule(name, {
+    if (store.state[name]) {
+      console.error(`A module with the name ${name} already exists`);
+      return;
+    }
+    if (mutations == null && mutations === undefined) {
+      mutations = {};
+    }
+    setHelpers(mutations, state);
+    store.registerModule((namespace ? [namespace, name] : name) as any, {
       namespaced: true,
       actions,
       getters,
@@ -88,5 +88,9 @@ export class VuexModule<
         return reactiveState();
       },
     });
+  }
+
+  public register(store: Vuex.Store<any>) {
+    this.activate(store);
   }
 }
