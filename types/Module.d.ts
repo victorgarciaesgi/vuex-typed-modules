@@ -20,7 +20,7 @@ export declare class VuexModule<S = any, M extends MutationsTree<S> = any, G ext
     mutations: ReturnedMutations<M>;
     state: S;
     helpers: SharedMutations<S>;
-    constructor({ name, state, actions, getters, mutations, dynamic, }: VuexModuleArgs<S, G, M, A>);
+    constructor({ name, state, actions, getters, mutations }: VuexModuleArgs<S, G, M, A>);
     extract(): {
         name: string;
         state: S;
@@ -28,5 +28,6 @@ export declare class VuexModule<S = any, M extends MutationsTree<S> = any, G ext
         actions: A;
         mutations: MutationsTree<S>;
     };
+    protected activate(store: Vuex.Store<any>, namespace?: string): void;
     register(store: Vuex.Store<any>): void;
 }
