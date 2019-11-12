@@ -2,11 +2,9 @@
 
 A VueX wrapper to fully type your modules without more boilerplate
 
-
 I'm realy greatly inspired by [@mrcrowl](https://github.com/mrcrowl) work and his lib [vuex-typex](https://github.com/mrcrowl/vuex-typex)
 
 I decided to take it a bit further and eliminating all boilerplate for declarating modules
-
 
 It also comes with an vuex action logger
 
@@ -27,21 +25,21 @@ yarn add vuex-typed-modules
 Create a `test.module.ts` in your store folder
 
 ```typescript
-import { VuexModule } from "vuex-typed-modules";
+import { VuexModule } from 'vuex-typed-modules';
 
 const mutations = {
   addCount(state, number: number) {
     state.count += number;
-  }
-},
+  },
+};
 
 const actions = {
   async addCountAsync(context, count: number): Promise<void> {
     await myAsyncFunction(count);
-  // Calling mutation
+    // Calling mutation
     testModule.mutations.addCount(count);
-  }
-},
+  },
+};
 
 export const testModule = new VuexModule({
   name: 'testModule',
@@ -82,8 +80,8 @@ new Vue({
 ```
 
 ```typescript
-import { Component, Prop, Vue } from "vue-property-decorator";
-import { testModule } from "~/modules";
+import { Component, Prop, Vue } from 'vue-property-decorator';
+import { testModule } from '~/modules';
 
 @Component
 export default class Home extends Vue {
@@ -102,9 +100,9 @@ export default class Home extends Vue {
 For dynamic modules, simply call the function `defineDynamicModule` instead
 
 ```typescript
-export const testModule = defineDynamicModule("testModule", state, {
+export const testModule = defineDynamicModule('testModule', state, {
   getters,
-  mutations
+  mutations,
 });
 ```
 
@@ -115,18 +113,42 @@ Then in your component when you need to activate the module
 Vuex types modules also add 2 helpers functions on top of your module
 
 ```typescript
-YourModule.resetState();
+YourModule.helpers.resetState();
 ```
 
 will reset your module to the initial State
 
 ```typescript
-YourModule.updateState({
-  count: 3
+YourModule.helpers.updateState({
+  count: 3,
 });
 ```
 
 Is like a mutation wrapper arround all your module state for simple state change (With type check too)
+
+```typescript
+YourModule.helpers.addListItem('users', { id: 2, name: 'Test' });
+```
+
+Will add an item to the list of your choice (Fully typed)
+
+```typescript
+YourModule.helpers.removeListItem('users', { id: 2 });
+```
+
+Will remove an item from a list with the help of an identifier
+
+```typescript
+YourModule.helpers.updateListItem('users', { id: 2 }, { name: 'Test2' });
+```
+
+Will update an item from a list with the help of an identifier
+
+```typescript
+YourModule.helpers.concatList('users', [{ id: 5, name: 'Bar' }]);
+```
+
+Will concate an array with an list of your state
 
 ## Autocomplete and type safety exemple
 
