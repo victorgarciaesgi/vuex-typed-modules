@@ -1,5 +1,5 @@
 import * as Vuex from 'vuex';
-import { ActionsTree, GettersTree, ReturnedGetters, ReturnedActions, ReturnedMutations, SharedMutations, MutationsTree } from './types';
+import { ReturnedGetters, ReturnedActions, ReturnedMutations, SharedMutations } from './types';
 export interface VuexModuleArgs<S, G, M, A> {
     name: string;
     dynamic?: boolean;
@@ -8,7 +8,7 @@ export interface VuexModuleArgs<S, G, M, A> {
     mutations?: M;
     actions?: A;
 }
-export declare class VuexModule<S = any, M extends MutationsTree<S> = any, G extends GettersTree<S> = any, A extends ActionsTree = any> {
+export declare class VuexModule<S = any, M extends Vuex.MutationTree<S> = any, G extends Vuex.GetterTree<S, any> = any, A extends Vuex.ActionTree<S, any> = any> {
     private name;
     private _initialState;
     private _getters;
@@ -24,9 +24,9 @@ export declare class VuexModule<S = any, M extends MutationsTree<S> = any, G ext
     extract(): {
         name: string;
         state: S;
-        getters: GettersTree<S>;
+        getters: Vuex.GetterTree<S, any>;
         actions: A;
-        mutations: MutationsTree<S>;
+        mutations: Vuex.MutationTree<S>;
     };
     protected activate(store: Vuex.Store<any>, namespace?: string): void;
     register(store: Vuex.Store<any>): void;

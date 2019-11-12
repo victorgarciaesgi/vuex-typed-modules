@@ -1,11 +1,6 @@
-export type IsValidArg<T> = T extends unknown
-  ? (keyof T extends never ? false : true)
-  : true;
+export type IsValidArg<T> = T extends unknown ? (keyof T extends never ? false : true) : true;
 export type Dictionary<T> = { [x: string]: T };
-export type KeepProperties<T, P> = Pick<
-  T,
-  { [K in keyof T]: T[K] extends P ? K : never }[keyof T]
->;
+export type KeepProperties<T, P> = Pick<T, { [K in keyof T]: T[K] extends P ? K : never }[keyof T]>;
 
 export type inferMutations<T> = T extends (state: any, payload: infer P) => void
   ? IsValidArg<P> extends true
@@ -13,9 +8,10 @@ export type inferMutations<T> = T extends (state: any, payload: infer P) => void
     : () => void
   : () => void;
 
-export type inferActions<
-  T extends (context: any, payload?: any) => void
-> = T extends (context, payload: infer P) => any
+export type inferActions<T extends (context: any, payload?: any) => void> = T extends (
+  context,
+  payload: infer P
+) => any
   ? IsValidArg<P> extends true
     ? (payload: P) => ReturnType<T>
     : () => ReturnType<T>
@@ -27,16 +23,6 @@ export type inferGetters<T extends (state, getters?) => any> = T extends (
 ) => infer R
   ? R
   : void;
-
-export type MutationsTree<S> = {
-  [x: string]: (state: S, payload: any) => void;
-};
-export type ActionsTree = {
-  [x: string]: (context: any, payload?: any) => any;
-};
-export type GettersTree<S> = {
-  [x: string]: (state?: S, getters?: any) => any;
-};
 
 export type ReturnedGetters<T extends any> = {
   [K in keyof T]: inferGetters<T[K]>;
@@ -60,12 +46,12 @@ export type SharedMutations<S> = {
   updateState(params: Partial<S>): void;
   updateListItem<T extends keyof KeepProperties<S, any[]>>(
     key: T,
-    id: string,
+    identifier: S[T] extends Array<any> ? { [K in keyof S[T][0]]+?: S[T][0][K] } : any,
     data: S[T] extends Array<any> ? { [K in keyof S[T][0]]+?: S[T][0][K] } : any
   ): void;
   removeListItem<T extends keyof KeepProperties<S, any[]>>(
     key: T,
-    id: string
+    identifier: S[T] extends Array<any> ? { [K in keyof S[T][0]]+?: S[T][0][K] } : any
   ): void;
   addListItem<T extends keyof KeepProperties<S, any[]>>(
     key: T,

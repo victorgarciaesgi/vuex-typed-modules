@@ -1,6 +1,7 @@
 import * as Vuex from 'vuex';
 import { VuexModule } from './Module';
 import { setHelpers } from './Helpers';
+import { VuexDynamicModule } from './DynamicModule';
 
 interface DataBaseOptions {
   logger?: boolean;
@@ -15,9 +16,13 @@ export class Database {
     this.options = options;
   }
 
-  private install(vuexModules: VuexModule[]): void {
+  private install(vuexModules: (VuexModule | VuexDynamicModule)[]): void {
     vuexModules.forEach(vuexmodule => {
-      vuexmodule.register(this.store);
+      if (vuexmodule instanceof VuexDynamicModule) {
+        vuexmodule.save(this.store);
+      } else {
+        vuexmodule.register(this.store);
+      }
     });
   }
 

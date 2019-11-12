@@ -1,13 +1,5 @@
 import * as Vuex from 'vuex';
-import {
-  ActionsTree,
-  GettersTree,
-  ReturnedGetters,
-  ReturnedActions,
-  ReturnedMutations,
-  SharedMutations,
-  MutationsTree,
-} from './types';
+import { ReturnedGetters, ReturnedActions, ReturnedMutations, SharedMutations } from './types';
 import { buildModifiers } from './modifiers';
 import { buildHelpers, setHelpers } from './Helpers';
 
@@ -22,14 +14,14 @@ export interface VuexModuleArgs<S, G, M, A> {
 
 export class VuexModule<
   S = any,
-  M extends MutationsTree<S> = any,
-  G extends GettersTree<S> = any,
-  A extends ActionsTree = any
+  M extends Vuex.MutationTree<S> = any,
+  G extends Vuex.GetterTree<S, any> = any,
+  A extends Vuex.ActionTree<S, any> = any
 > {
   private name!: string;
   private _initialState!: S;
-  private _getters!: GettersTree<S>;
-  private _mutations!: MutationsTree<S>;
+  private _getters!: Vuex.GetterTree<S, any>;
+  private _mutations!: Vuex.MutationTree<S>;
   private _actions!: A;
   private _dynamic: boolean;
 
