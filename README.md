@@ -68,6 +68,18 @@ new Vue({
 }).$mount("#app");
 ```
 
+## For Nuxt.js
+
+```typescript
+import * as Modules from '~/modules';
+
+const database = new Database({ logger: process.browser });
+const modules = Object.keys(Modules).map(key => Modules[key]);
+export const plugins = [database.deploy(modules)];
+
+export const state = () => ({});
+```
+
 ## Usage in your components or in other modules!
 
 ```html
@@ -97,12 +109,14 @@ export default class Home extends Vue {
 
 ## Dynamic Modules
 
-For dynamic modules, simply call the function `defineDynamicModule` instead
+For dynamic modules, simply call the function `VuexDynamicModule` instead
 
 ```typescript
-export const testModule = defineDynamicModule('testModule', state, {
-  getters,
-  mutations,
+export const testModule = new VuexDynamicModule({
+  name: 'testModule',
+  state: {
+    count: 1,
+  },
 });
 ```
 
