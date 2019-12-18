@@ -1,6 +1,6 @@
 {
   "name": "vuex-typed-modules",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "A typescript wrapper for Vuex store with fully typed exposure",
   "keywords": [
     "vuex",
@@ -28,13 +28,13 @@
     "vuex": "3.x"
   },
   "devDependencies": {
-    "@types/node": "^12.12.7",
+    "@types/node": "^12.12.20",
     "@types/webpack-env": "^1.14.1",
     "rimraf": "^3.0.0"
   },
   "dependencies": {
-    "typescript": "^3.7.2",
-    "vue": "2.6.10",
+    "typescript": "^3.7.3",
+    "vue": "2.6.11",
     "vuex": "^3.1.2"
   },
   "repository": {
