@@ -9,7 +9,7 @@ export class VuexDynamicModule<
 > extends VuexModule<S, M, G, A> {
   private namespace: string;
   private store: Vuex.Store<any>;
-  constructor({ namespace, ...rest }: VuexModuleArgs<S, G, M, A> & { namespace: string }) {
+  constructor({ namespace, ...rest }: VuexModuleArgs<S, G, M, A> & { namespace?: string }) {
     super(rest);
     this.namespace = namespace;
   }
@@ -20,5 +20,9 @@ export class VuexDynamicModule<
 
   public register(): void {
     this.activate(this.store, this.namespace);
+  }
+
+  public unregister(): void {
+    this.store.unregisterModule((this.namespace ? [this.namespace, this.name] : this.name) as any);
   }
 }

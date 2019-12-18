@@ -122,6 +122,18 @@ export const testModule = new VuexDynamicModule({
 
 Then in your component when you need to activate the module
 
+```typescript
+
+created() {
+  testModule.register();
+}
+
+destroyed() {
+  testModule.unregister()
+}
+
+```
+
 ## Default module helpers
 
 Vuex types modules also add 2 helpers functions on top of your module

@@ -4,8 +4,9 @@ export declare class VuexDynamicModule<S = any, M extends Vuex.MutationTree<S> =
     private namespace;
     private store;
     constructor({ namespace, ...rest }: VuexModuleArgs<S, G, M, A> & {
-        namespace: string;
+        namespace?: string;
     });
     save(store: Vuex.Store<any>): void;
     register(): void;
+    unregister(): void;
 }

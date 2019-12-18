@@ -5,11 +5,11 @@ import { buildHelpers, setHelpers } from './Helpers';
 
 export interface VuexModuleArgs<S, G, M, A> {
   name: string;
-  dynamic?: boolean;
   state: S;
   getters?: G;
   mutations?: M;
   actions?: A;
+  options?: Vuex.ModuleOptions;
 }
 
 export class VuexModule<
@@ -18,12 +18,12 @@ export class VuexModule<
   G extends Vuex.GetterTree<S, any> = any,
   A extends Vuex.ActionTree<S, any> = any
 > {
-  private name!: string;
-  private _initialState!: S;
-  private _getters!: Vuex.GetterTree<S, any>;
-  private _mutations!: Vuex.MutationTree<S>;
-  private _actions!: A;
-  private _dynamic: boolean;
+  protected name!: string;
+  protected _initialState!: S;
+  protected _getters!: Vuex.GetterTree<S, any>;
+  protected _mutations!: Vuex.MutationTree<S>;
+  protected _actions!: A;
+  protected _options: Vuex.ModuleOptions;
 
   public getters: ReturnedGetters<G>;
   public actions: ReturnedActions<A>;
@@ -31,12 +31,13 @@ export class VuexModule<
   public state: S;
   public helpers: SharedMutations<S>;
 
-  constructor({ name, state, actions, getters, mutations }: VuexModuleArgs<S, G, M, A>) {
+  constructor({ name, state, actions, getters, mutations, options }: VuexModuleArgs<S, G, M, A>) {
     this.name = name;
     this._initialState = state;
     this._getters = getters;
     this._actions = actions;
     this._mutations = mutations;
+    this._options = options;
   }
 
   public extract() {
@@ -46,10 +47,11 @@ export class VuexModule<
       getters: this._getters,
       actions: this._actions,
       mutations: this._mutations,
+      options: this._options,
     };
   }
   protected activate(store: Vuex.Store<any>, namespace?: string): void {
-    let { name, actions, getters, mutations, state } = this.extract();
+    let { name, actions, getters, mutations, state, options } = this.extract();
     if (store.state[name]) {
       console.error(`A module with the name ${name} already exists`);
       return;
@@ -58,13 +60,17 @@ export class VuexModule<
       mutations = {};
     }
     setHelpers(mutations, state);
-    store.registerModule((namespace ? [namespace, name] : name) as any, {
-      namespaced: true,
-      actions,
-      getters,
-      mutations,
-      state,
-    });
+    store.registerModule(
+      (namespace ? [namespace, name] : name) as any,
+      {
+        namespaced: true,
+        actions,
+        getters,
+        mutations,
+        state,
+      },
+      options
+    );
     const { registerActions, registerGetters, registerMutations, reactiveState } = buildModifiers(
       store,
       this.name
