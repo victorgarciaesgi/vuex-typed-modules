@@ -1,3 +1,5 @@
+import { Getter, GetterTree, ActionTree, Action, ActionHandler } from 'vuex';
+
 export type IsValidArg<T> = T extends unknown ? (keyof T extends never ? false : true) : true;
 export type Dictionary<T> = { [x: string]: T };
 export type KeepProperties<T, P> = Pick<T, { [K in keyof T]: T[K] extends P ? K : never }[keyof T]>;
@@ -8,7 +10,7 @@ export type inferMutations<T> = T extends (state: any, payload: infer P) => void
     : () => void
   : () => void;
 
-export type inferActions<T extends (context: any, payload?: any) => void> = T extends (
+export type inferActions<T extends ActionHandler<any, any>> = T extends (
   context,
   payload: infer P
 ) => any
@@ -17,20 +19,27 @@ export type inferActions<T extends (context: any, payload?: any) => void> = T ex
     : () => ReturnType<T>
   : ReturnType<T>;
 
-export type inferGetters<T extends (state, getters?) => any> = T extends (
-  state,
-  getters?
-) => infer R
+export type inferGetters<T extends Getter<any, any>> = T extends (state, getters?) => infer R
   ? R
   : void;
 
-export type ReturnedGetters<T extends any> = {
+export type MutationsPayload = {
+  [x: string]: (state: any, payload?: any) => void;
+};
+export type ActionsPayload = {
+  [x: string]: (context: any, payload?: any) => any;
+};
+export type GettersPayload = {
+  [x: string]: (state?: any, getters?: any) => any;
+};
+
+export type ReturnedGetters<T extends GetterTree<any, any>> = {
   [K in keyof T]: inferGetters<T[K]>;
 };
-export type ReturnedActions<T extends any> = {
+export type ReturnedActions<T extends Record<string, ActionHandler<any, any>>> = {
   [K in keyof T]: inferActions<T[K]>;
 };
-export type ReturnedMutations<T extends any> = {
+export type ReturnedMutations<T extends MutationsPayload> = {
   [K in keyof T]: inferMutations<T[K]>;
 };
 

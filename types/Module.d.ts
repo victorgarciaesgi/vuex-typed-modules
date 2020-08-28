@@ -8,7 +8,7 @@ export interface VuexModuleArgs<S, G, M, A> {
     actions?: A;
     options?: Vuex.ModuleOptions;
 }
-export declare class VuexModule<S = any, M extends Vuex.MutationTree<S> = any, G extends Vuex.GetterTree<S, any> = any, A extends Vuex.ActionTree<S, any> = any> {
+export declare class VuexModule<S extends Record<string, any> = any, M extends Vuex.MutationTree<S> = any, G extends Vuex.GetterTree<S, any> = any, A extends Record<string, Vuex.ActionHandler<any, any>> = any> {
     protected name: string;
     protected _initialState: S;
     protected _getters: Vuex.GetterTree<S, any>;

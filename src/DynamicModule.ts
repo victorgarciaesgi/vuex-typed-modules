@@ -2,10 +2,10 @@ import * as Vuex from 'vuex';
 import { VuexModule, VuexModuleArgs } from './Module';
 
 export class VuexDynamicModule<
-  S = any,
+  S extends Record<string, any> = any,
   M extends Vuex.MutationTree<S> = any,
   G extends Vuex.GetterTree<S, any> = any,
-  A extends Vuex.ActionTree<S, any> = any
+  A extends Record<string, Vuex.ActionHandler<any, any>> = any
 > extends VuexModule<S, M, G, A> {
   private namespace: string;
   private store: Vuex.Store<any>;

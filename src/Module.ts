@@ -13,10 +13,10 @@ export interface VuexModuleArgs<S, G, M, A> {
 }
 
 export class VuexModule<
-  S = any,
+  S extends Record<string, any> = any,
   M extends Vuex.MutationTree<S> = any,
   G extends Vuex.GetterTree<S, any> = any,
-  A extends Vuex.ActionTree<S, any> = any
+  A extends Record<string, Vuex.ActionHandler<any, any>> = any
 > {
   protected name!: string;
   protected _initialState!: S;
@@ -92,3 +92,13 @@ export class VuexModule<
     this.activate(store);
   }
 }
+
+const test = new VuexModule({
+  name: 'test',
+  state: {
+    name: 'dlkfz',
+  },
+  getters: {
+    bla(state) {},
+  },
+});
