@@ -17,7 +17,7 @@ export class Database {
   }
 
   private install(vuexModules: (VuexModule | VuexDynamicModule)[]): void {
-    vuexModules.forEach(vuexmodule => {
+    vuexModules.forEach((vuexmodule) => {
       if (vuexmodule instanceof VuexDynamicModule) {
         vuexmodule.save(this.store);
       } else {
@@ -41,7 +41,7 @@ export class Database {
           const moduleName = action.type.split('/')[0];
           const type = action.type.split('/')[1];
           console.groupCollapsed(
-            `%c Vuex Action %c ${moduleName} %c ${type} %c`,
+            `%c Vuex Action %c ${moduleName} %c ${type ? `${type}` : '-'} %c`,
             'background: #451382 ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff',
             'background:#fff;padding: 1px;color: #451382',
             'background:#2788d2;padding: 1px;border-radius: 0 3px 3px 0;color: #fff',
