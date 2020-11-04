@@ -46,6 +46,8 @@ export const testModule = new VuexModule({
   state: {
     count: 1,
   },
+  mutations,
+  actions
 });
 ```
 
