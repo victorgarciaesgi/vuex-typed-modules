@@ -50,9 +50,10 @@ export class VuexModule<
       options: this._options,
     };
   }
-  protected activate(store: Vuex.Store<any>, namespace?: string): void {
+  protected activate(store: Vuex.Store<any>, nestedName?: string): void {
     let { name, actions, getters, mutations, state, options } = this.extract();
-    if (store.state[name]) {
+    const moduleName = name;
+    if (store.state[moduleName]) {
       console.error(`A module with the name ${name} already exists`);
       return;
     }
@@ -61,7 +62,7 @@ export class VuexModule<
     }
     setHelpers(mutations, state);
     store.registerModule(
-      (namespace ? [namespace, name] : name) as any,
+      moduleName,
       {
         namespaced: true,
         actions,
@@ -88,17 +89,7 @@ export class VuexModule<
     });
   }
 
-  public register(store: Vuex.Store<any>) {
+  public deploy(store: Vuex.Store<any>) {
     this.activate(store);
   }
 }
-
-const test = new VuexModule({
-  name: 'test',
-  state: {
-    name: 'dlkfz',
-  },
-  getters: {
-    bla(state) {},
-  },
-});

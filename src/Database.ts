@@ -21,12 +21,12 @@ export class Database {
       if (vuexmodule instanceof VuexDynamicModule) {
         vuexmodule.save(this.store);
       } else {
-        vuexmodule.register(this.store);
+        vuexmodule.deploy(this.store);
       }
     });
   }
 
-  public deploy(vuexModules: VuexModule[]) {
+  public deploy(vuexModules: (VuexModule | VuexDynamicModule)[]) {
     return (store: Vuex.Store<any>): void => {
       this.store = store;
       this.install(vuexModules);

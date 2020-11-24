@@ -1,5 +1,6 @@
 import * as Vuex from 'vuex';
 import { VuexModule } from './Module';
+import { VuexDynamicModule } from './DynamicModule';
 interface DataBaseOptions {
     logger?: boolean;
 }
@@ -9,7 +10,7 @@ export declare class Database {
     private options;
     constructor(options: DataBaseOptions);
     private install;
-    deploy(vuexModules: VuexModule[]): (store: Vuex.Store<any>) => void;
+    deploy(vuexModules: (VuexModule | VuexDynamicModule)[]): (store: Vuex.Store<any>) => void;
     private createLogger;
 }
 export {};

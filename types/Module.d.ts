@@ -29,6 +29,6 @@ export declare class VuexModule<S extends Record<string, any> = any, M extends V
         mutations: Vuex.MutationTree<S>;
         options: Vuex.ModuleOptions;
     };
-    protected activate(store: Vuex.Store<any>, namespace?: string): void;
-    register(store: Vuex.Store<any>): void;
+    protected activate(store: Vuex.Store<any>, nestedName?: string): void;
+    deploy(store: Vuex.Store<any>): void;
 }
