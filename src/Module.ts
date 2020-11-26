@@ -3,7 +3,12 @@ import { ReturnedGetters, ReturnedActions, ReturnedMutations, SharedMutations } 
 import { buildModifiers } from './modifiers';
 import { buildHelpers, setHelpers } from './Helpers';
 
-export interface VuexModuleArgs<S, G, M, A> {
+export interface VuexModuleArgs<
+  S extends Record<string, any>,
+  G extends Vuex.GetterTree<S, any> = never,
+  M extends Vuex.MutationTree<S> = never,
+  A extends Record<string, Vuex.ActionHandler<any, any>> = never
+> {
   name: string;
   state: S;
   getters?: G;
@@ -13,10 +18,10 @@ export interface VuexModuleArgs<S, G, M, A> {
 }
 
 export class VuexModule<
-  S extends Record<string, any> = any,
-  M extends Vuex.MutationTree<S> = any,
-  G extends Vuex.GetterTree<S, any> = any,
-  A extends Record<string, Vuex.ActionHandler<any, any>> = any
+  S extends Record<string, any>,
+  M extends Vuex.MutationTree<S>,
+  G extends Vuex.GetterTree<S, any>,
+  A extends Record<string, Vuex.ActionHandler<any, any>>
 > {
   protected name!: string;
   protected _initialState!: S;
@@ -25,11 +30,11 @@ export class VuexModule<
   protected _actions!: A;
   protected _options: Vuex.ModuleOptions;
 
-  public getters: ReturnedGetters<G>;
-  public actions: ReturnedActions<A>;
-  public mutations: ReturnedMutations<M>;
-  public state: S;
-  public helpers: SharedMutations<S>;
+  public getters: G extends never ? undefined : ReturnedGetters<G>;
+  public actions: A extends never ? undefined : ReturnedActions<A>;
+  public mutations: M extends never ? undefined : ReturnedMutations<M>;
+  public state!: S;
+  public helpers!: SharedMutations<S>;
 
   constructor({ name, state, actions, getters, mutations, options }: VuexModuleArgs<S, G, M, A>) {
     this.name = name;
@@ -93,3 +98,18 @@ export class VuexModule<
     this.activate(store);
   }
 }
+
+// const test = new VuexModule({
+//   name: 'zefez',
+//   state: {
+//     foo: 'bar',
+//   },
+//   mutations: {
+//     boo(state) {
+//       state.foo;
+//     },
+//   },
+//   actions: {
+//     test() {},
+//   },
+// });

@@ -1,6 +1,6 @@
 import * as Vuex from 'vuex';
 import { ReturnedGetters, ReturnedActions, ReturnedMutations, SharedMutations } from './types';
-export interface VuexModuleArgs<S, G, M, A> {
+export interface VuexModuleArgs<S extends Record<string, any>, G extends Vuex.GetterTree<S, any> = never, M extends Vuex.MutationTree<S> = never, A extends Record<string, Vuex.ActionHandler<any, any>> = never> {
     name: string;
     state: S;
     getters?: G;
@@ -8,16 +8,16 @@ export interface VuexModuleArgs<S, G, M, A> {
     actions?: A;
     options?: Vuex.ModuleOptions;
 }
-export declare class VuexModule<S extends Record<string, any> = any, M extends Vuex.MutationTree<S> = any, G extends Vuex.GetterTree<S, any> = any, A extends Record<string, Vuex.ActionHandler<any, any>> = any> {
+export declare class VuexModule<S extends Record<string, any>, M extends Vuex.MutationTree<S>, G extends Vuex.GetterTree<S, any>, A extends Record<string, Vuex.ActionHandler<any, any>>> {
     protected name: string;
     protected _initialState: S;
     protected _getters: Vuex.GetterTree<S, any>;
     protected _mutations: Vuex.MutationTree<S>;
     protected _actions: A;
     protected _options: Vuex.ModuleOptions;
-    getters: ReturnedGetters<G>;
-    actions: ReturnedActions<A>;
-    mutations: ReturnedMutations<M>;
+    getters: G extends never ? undefined : ReturnedGetters<G>;
+    actions: A extends never ? undefined : ReturnedActions<A>;
+    mutations: M extends never ? undefined : ReturnedMutations<M>;
     state: S;
     helpers: SharedMutations<S>;
     constructor({ name, state, actions, getters, mutations, options }: VuexModuleArgs<S, G, M, A>);

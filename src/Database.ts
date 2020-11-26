@@ -7,6 +7,8 @@ interface DataBaseOptions {
   logger?: boolean;
 }
 
+type DefaultModule = VuexModule<any, any, any, any> | VuexDynamicModule<any, any, any, any>;
+
 export class Database {
   private store!: Vuex.Store<any>;
   private modules: (Vuex.Module<any, any> & { name: string })[] = [];
@@ -16,7 +18,7 @@ export class Database {
     this.options = options;
   }
 
-  private install(vuexModules: (VuexModule | VuexDynamicModule)[]): void {
+  private install(vuexModules: DefaultModule[]): void {
     vuexModules.forEach((vuexmodule) => {
       if (vuexmodule instanceof VuexDynamicModule) {
         vuexmodule.save(this.store);
@@ -26,7 +28,7 @@ export class Database {
     });
   }
 
-  public deploy(vuexModules: (VuexModule | VuexDynamicModule)[]) {
+  public deploy(vuexModules: DefaultModule[]) {
     return (store: Vuex.Store<any>): void => {
       this.store = store;
       this.install(vuexModules);

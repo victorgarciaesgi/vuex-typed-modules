@@ -11,14 +11,14 @@ export type ModuleToInstance<TModule> = TModule extends VuexDynamicModule<
   : TModule;
 
 export class VuexDynamicModule<
-  S extends Record<string, any> = any,
-  M extends Vuex.MutationTree<S> = any,
-  G extends Vuex.GetterTree<S, any> = any,
-  A extends Record<string, Vuex.ActionHandler<any, any>> = any
+  S extends Record<string, any>,
+  M extends Vuex.MutationTree<S>,
+  G extends Vuex.GetterTree<S, any>,
+  A extends Record<string, Vuex.ActionHandler<any, any>>
 > {
   private nestedName?: string;
   private namespaceName!: string;
-  private module: DynamicModuleInstance;
+  private module: DynamicModuleInstance<any, any, any, any>;
   private state!: S;
   private getters!: any;
   private mutations!: any;
@@ -61,10 +61,10 @@ export class VuexDynamicModule<
 }
 
 export class DynamicModuleInstance<
-  S extends Record<string, any> = any,
-  M extends Vuex.MutationTree<S> = any,
-  G extends Vuex.GetterTree<S, any> = any,
-  A extends Record<string, Vuex.ActionHandler<any, any>> = any
+  S extends Record<string, any>,
+  M extends Vuex.MutationTree<S>,
+  G extends Vuex.GetterTree<S, any>,
+  A extends Record<string, Vuex.ActionHandler<any, any>>
 > extends VuexModule<S, M, G, A> {
   private nestedName?: string;
   private store: Vuex.Store<any>;
