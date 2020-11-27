@@ -133,18 +133,26 @@ export const testModule = new VuexDynamicModule({
 });
 ```
 
-Then in your component when you need to activate the module
+### Usage
 
-```typescript
+```vue
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator';
+import { testModule } from '~/modules';
 
-created() {
-  testModule.register();
+@Component
+export default class TestView extends Vue {
+  readonly module = testModule.register('child-store');
+
+  get count() {
+    return this.module.state.count;
+  }
+
+  beforeDestroy() {
+    this.module.unregister();
+  }
 }
-
-destroyed() {
-  testModule.unregister()
-}
-
+</script>
 ```
 
 ## Default module helpers
