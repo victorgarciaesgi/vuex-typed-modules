@@ -11,8 +11,10 @@ export declare class VuexDynamicModule<S extends Record<string, any>, M extends 
     private actions;
     private options;
     private store;
+    protected _logger: boolean;
     private get params();
-    constructor({ name, mutations, state, actions, getters, options }: VuexModuleArgs<S, G, M, A>);
+    get name(): string;
+    constructor({ name, mutations, state, actions, getters, options, logger, }: VuexModuleArgs<S, G, M, A>);
     save(store: Vuex.Store<any>): void;
     register(moduleName?: string): DynamicModuleInstance<S, M, G, A>;
 }

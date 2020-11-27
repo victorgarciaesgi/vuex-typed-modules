@@ -9,6 +9,7 @@ export declare class Database {
     private store;
     private modules;
     private options;
+    private loggerBlackList;
     constructor(options: DataBaseOptions);
     private install;
     deploy(vuexModules: DefaultModule[]): (store: Vuex.Store<any>) => void;

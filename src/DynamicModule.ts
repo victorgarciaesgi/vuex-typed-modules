@@ -1,3 +1,4 @@
+import { log } from 'console';
 import * as Vuex from 'vuex';
 import { VuexModule, VuexModuleArgs } from './Module';
 
@@ -26,6 +27,8 @@ export class VuexDynamicModule<
   private options: Vuex.ModuleOptions;
   private store: Vuex.Store<any>;
 
+  protected _logger: boolean;
+
   private get params() {
     return {
       state: this.state,
@@ -36,13 +39,30 @@ export class VuexDynamicModule<
     };
   }
 
-  constructor({ name, mutations, state, actions, getters, options }: VuexModuleArgs<S, G, M, A>) {
+  get name(): string {
+    if (this.nestedName) {
+      return `${this.namespaceName}-${this.nestedName}`;
+    }
+
+    return this.namespaceName;
+  }
+
+  constructor({
+    name,
+    mutations,
+    state,
+    actions,
+    getters,
+    options,
+    logger = true,
+  }: VuexModuleArgs<S, G, M, A>) {
     this.namespaceName = name;
     this.state = state;
     this.getters = getters;
     this.actions = actions;
     this.mutations = mutations;
     this.options = options;
+    this._logger = logger;
   }
 
   public save(store: Vuex.Store<any>) {
@@ -51,9 +71,7 @@ export class VuexDynamicModule<
 
   public register(moduleName?: string): DynamicModuleInstance<S, M, G, A> {
     this.nestedName = moduleName;
-    let fullName = this.nestedName
-      ? `${this.namespaceName}-${this.nestedName}`
-      : this.namespaceName;
+    let fullName = this.name;
     this.module = new DynamicModuleInstance({ name: fullName, ...this.params, store: this.store });
     this.module.register();
     return this.module;

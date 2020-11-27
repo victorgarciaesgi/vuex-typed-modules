@@ -15,6 +15,7 @@ export interface VuexModuleArgs<
   mutations?: M;
   actions?: A;
   options?: Vuex.ModuleOptions;
+  logger?: boolean;
 }
 
 export class VuexModule<
@@ -29,6 +30,7 @@ export class VuexModule<
   protected _mutations!: Vuex.MutationTree<S>;
   protected _actions!: A;
   protected _options: Vuex.ModuleOptions;
+  protected _logger: boolean;
 
   public getters: G extends never ? undefined : ReturnedGetters<G>;
   public actions: A extends never ? undefined : ReturnedActions<A>;
@@ -36,13 +38,22 @@ export class VuexModule<
   public state!: S;
   public helpers!: SharedMutations<S>;
 
-  constructor({ name, state, actions, getters, mutations, options }: VuexModuleArgs<S, G, M, A>) {
+  constructor({
+    name,
+    state,
+    actions,
+    getters,
+    mutations,
+    options,
+    logger = true,
+  }: VuexModuleArgs<S, G, M, A>) {
     this.name = name;
     this._initialState = state;
     this._getters = getters;
     this._actions = actions;
     this._mutations = mutations;
     this._options = options;
+    this._logger = logger;
   }
 
   public extract() {

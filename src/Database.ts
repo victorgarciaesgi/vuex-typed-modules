@@ -13,6 +13,7 @@ export class Database {
   private store!: Vuex.Store<any>;
   private modules: (Vuex.Module<any, any> & { name: string })[] = [];
   private options!: DataBaseOptions;
+  private loggerBlackList: string[] = [];
 
   constructor(options: DataBaseOptions) {
     this.options = options;
@@ -29,6 +30,11 @@ export class Database {
   }
 
   public deploy(vuexModules: DefaultModule[]) {
+    this.loggerBlackList = vuexModules
+      .filter((mod) => {
+        return !mod['_logger'];
+      })
+      .map((mod) => mod['name']);
     return (store: Vuex.Store<any>): void => {
       this.store = store;
       this.install(vuexModules);
@@ -41,17 +47,19 @@ export class Database {
       this.store.subscribeAction({
         before: (action, state) => {
           const moduleName = action.type.split('/')[0];
-          const type = action.type.split('/')[1];
-          console.groupCollapsed(
-            `%c Vuex Action %c ${moduleName} %c ${type ? `${type}` : '-'} %c`,
-            'background: #451382 ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff',
-            'background:#fff;padding: 1px;color: #451382',
-            'background:#2788d2;padding: 1px;border-radius: 0 3px 3px 0;color: #fff',
-            'background:transparent'
-          );
-          console.log('PAYLOAD', action.payload);
-          console.log('STATE', state);
-          console.groupEnd();
+          if (!this.loggerBlackList.includes(moduleName)) {
+            const type = action.type.split('/')[1];
+            console.groupCollapsed(
+              `%c Vuex Action %c ${moduleName} %c ${type ? `${type}` : '-'} %c`,
+              'background: #451382 ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff',
+              'background:#fff;padding: 1px;color: #451382',
+              'background:#2788d2;padding: 1px;border-radius: 0 3px 3px 0;color: #fff',
+              'background:transparent'
+            );
+            console.log('PAYLOAD', action.payload);
+            console.log('STATE', state);
+            console.groupEnd();
+          }
         },
       });
     }
