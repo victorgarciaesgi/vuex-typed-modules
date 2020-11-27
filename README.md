@@ -1,4 +1,15 @@
-# Vuex-typed-modules
+# 🧰 vuex-typed-modules
+
+[![npm version][npm-version-src]][npm-version-href]
+[![npm downloads][npm-downloads-src]][npm-downloads-href]
+[![npm downloads][npm-total-downloads-src]][npm-downloads-href]
+<img src='https://img.shields.io/npm/l/vuex-typed-modules.svg'>
+
+[npm-version-src]: https://img.shields.io/npm/v/vuex-typed-modules.svg
+[npm-version-href]: https://www.npmjs.com/package/vuex-typed-modules
+[npm-downloads-src]: https://img.shields.io/npm/dm/vuex-typed-modules.svg
+[npm-total-downloads-src]: https://img.shields.io/npm/dt/vuex-typed-modules.svg
+[npm-downloads-href]: https://www.npmjs.com/package/vuex-typed-modules
 
 A VueX wrapper to fully type your modules without more boilerplate
 
@@ -8,7 +19,7 @@ I decided to take it a bit further and eliminating all boilerplate for declarati
 
 It also comes with an vuex action logger
 
-![actionsloggers](https://github.com/victorgarciaesgi/Vuex-typed-modules/blob/master/captures/actionlogger.png?raw=true)
+![actionsloggers](https://github.com/victorgarciaesgi/vuex-typed-modules/blob/master/captures/actionlogger.png?raw=true)
 
 ## Installation
 
@@ -47,7 +58,7 @@ export const testModule = new VuexModule({
     count: 1,
   },
   mutations,
-  actions
+  actions,
 });
 ```
 
@@ -76,7 +87,7 @@ new Vue({
 import * as Modules from '~/modules';
 
 const database = new Database({ logger: process.browser });
-const modules = Object.keys(Modules).map(key => Modules[key]);
+const modules = Object.keys(Modules).map((key) => Modules[key]);
 export const plugins = [database.deploy(modules)];
 
 export const state = () => ({});
