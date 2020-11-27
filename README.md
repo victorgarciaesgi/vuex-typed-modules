@@ -38,27 +38,23 @@ Create a `test.module.ts` in your store folder
 ```typescript
 import { VuexModule } from 'vuex-typed-modules';
 
-const mutations = {
-  addCount(state, number: number) {
-    state.count += number;
-  },
-};
-
-const actions = {
-  async addCountAsync(context, count: number): Promise<void> {
-    await myAsyncFunction(count);
-    // Calling mutation
-    testModule.mutations.addCount(count);
-  },
-};
-
 export const testModule = new VuexModule({
   name: 'testModule',
   state: {
     count: 1,
   },
-  mutations,
-  actions,
+  mutations: {
+    addCount(state, number: number) {
+      state.count += number;
+    },
+  },
+  actions: {
+    async addCountAsync(_, count: number): Promise<void> {
+      await myAsyncFunction(count);
+      // Calling mutation
+      testModule.mutations.addCount(count);
+    },
+  },
 });
 ```
 
@@ -125,6 +121,8 @@ export default class Home extends Vue {
 For dynamic modules, simply call the function `VuexDynamicModule` instead
 
 ```typescript
+import { VuexDynamicModule } from 'vuex-typed-modules';
+
 export const testModule = new VuexDynamicModule({
   name: 'testModule',
   state: {
