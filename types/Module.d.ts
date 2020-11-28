@@ -1,6 +1,6 @@
 import * as Vuex from 'vuex';
 import { ReturnedGetters, ReturnedActions, ReturnedMutations, SharedMutations } from './types';
-export interface VuexModuleArgs<S extends Record<string, any>, G extends Vuex.GetterTree<S, any> = never, M extends Vuex.MutationTree<S> = never, A extends Record<string, Vuex.ActionHandler<any, any>> = never> {
+export interface VuexModuleArgs<S extends Record<string, any>, G extends Vuex.GetterTree<S, any> = never, M extends Vuex.MutationTree<S> = never, A extends Record<string, Vuex.ActionHandler<S, any>> = never> {
     name: string;
     state: S;
     getters?: G;
@@ -9,7 +9,7 @@ export interface VuexModuleArgs<S extends Record<string, any>, G extends Vuex.Ge
     options?: Vuex.ModuleOptions;
     logger?: boolean;
 }
-export declare class VuexModule<S extends Record<string, any>, M extends Vuex.MutationTree<S>, G extends Vuex.GetterTree<S, any>, A extends Record<string, Vuex.ActionHandler<any, any>>> {
+export declare class VuexModule<S extends Record<string, any>, M extends Vuex.MutationTree<S>, G extends Vuex.GetterTree<S, any>, A extends Record<string, Vuex.ActionHandler<S, any>>> {
     protected name: string;
     protected _initialState: S;
     protected _getters: Vuex.GetterTree<S, any>;

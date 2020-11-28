@@ -6,8 +6,9 @@ export declare type Dictionary<T> = {
 export declare type KeepProperties<T, P> = Pick<T, {
     [K in keyof T]: T[K] extends P ? K : never;
 }[keyof T]>;
-export declare type inferMutations<T> = T extends (state: any, payload: infer P) => void ? IsValidArg<P> extends true ? (payload: P) => void : () => void : () => void;
-export declare type inferActions<T extends ActionHandler<any, any>> = T extends (context: any, payload: infer P) => any ? IsValidArg<P> extends true ? (payload: P) => ReturnType<T> : () => ReturnType<T> : ReturnType<T>;
+export declare type ParameterName<T extends (...args: [any, any]) => any> = T extends (context: any, ...args: infer P) => any ? P : never;
+export declare type inferMutations<T> = T extends (state: any, payload: infer P) => void ? IsValidArg<P> extends true ? (...args: ParameterName<T>) => void : () => void : () => void;
+export declare type inferActions<T extends ActionHandler<any, any>> = T extends (context: any, payload: infer P) => any ? IsValidArg<P> extends true ? (...args: ParameterName<T>) => ReturnType<T> : () => ReturnType<T> : ReturnType<T>;
 export declare type inferGetters<T extends Getter<any, any>> = T extends (state: any, getters?: any) => infer R ? R : void;
 export declare type MutationsPayload = {
     [x: string]: (state: any, payload?: any) => void;

@@ -7,7 +7,7 @@ export interface VuexModuleArgs<
   S extends Record<string, any>,
   G extends Vuex.GetterTree<S, any> = never,
   M extends Vuex.MutationTree<S> = never,
-  A extends Record<string, Vuex.ActionHandler<any, any>> = never
+  A extends Record<string, Vuex.ActionHandler<S, any>> = never
 > {
   name: string;
   state: S;
@@ -22,7 +22,7 @@ export class VuexModule<
   S extends Record<string, any>,
   M extends Vuex.MutationTree<S>,
   G extends Vuex.GetterTree<S, any>,
-  A extends Record<string, Vuex.ActionHandler<any, any>>
+  A extends Record<string, Vuex.ActionHandler<S, any>>
 > {
   protected name!: string;
   protected _initialState!: S;
@@ -68,41 +68,43 @@ export class VuexModule<
   }
   protected activate(store: Vuex.Store<any>, nestedName?: string): void {
     let { name, actions, getters, mutations, state, options } = this.extract();
-    const moduleName = name;
-    if (store.state[moduleName]) {
-      console.error(`A module with the name ${name} already exists`);
+
+    if (store.hasModule(name)) {
+      console.info(`Module ${name} still active, skipping activation`);
       return;
+    } else {
+      const moduleName = name;
+      if (mutations == null && mutations === undefined) {
+        mutations = {};
+      }
+      setHelpers(mutations, state);
+      store.registerModule(
+        moduleName,
+        {
+          namespaced: true,
+          actions,
+          getters,
+          mutations,
+          state,
+        },
+        options
+      );
+      const { registerActions, registerGetters, registerMutations, reactiveState } = buildModifiers(
+        store,
+        this.name
+      );
+      this.helpers = buildHelpers(store, this.name);
+      this.mutations = registerMutations(this._mutations);
+      this.actions = registerActions(this._actions);
+      this.getters = registerGetters(this._getters);
+      Object.defineProperty(this, 'state', {
+        enumerable: true,
+        configurable: true,
+        get() {
+          return reactiveState();
+        },
+      });
     }
-    if (mutations == null && mutations === undefined) {
-      mutations = {};
-    }
-    setHelpers(mutations, state);
-    store.registerModule(
-      moduleName,
-      {
-        namespaced: true,
-        actions,
-        getters,
-        mutations,
-        state,
-      },
-      options
-    );
-    const { registerActions, registerGetters, registerMutations, reactiveState } = buildModifiers(
-      store,
-      this.name
-    );
-    this.helpers = buildHelpers(store, this.name);
-    this.mutations = registerMutations(this._mutations);
-    this.actions = registerActions(this._actions);
-    this.getters = registerGetters(this._getters);
-    Object.defineProperty(this, 'state', {
-      enumerable: true,
-      configurable: true,
-      get() {
-        return reactiveState();
-      },
-    });
   }
 
   public deploy(store: Vuex.Store<any>) {

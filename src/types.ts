@@ -4,18 +4,25 @@ export type IsValidArg<T> = T extends unknown ? (keyof T extends never ? false :
 export type Dictionary<T> = { [x: string]: T };
 export type KeepProperties<T, P> = Pick<T, { [K in keyof T]: T[K] extends P ? K : never }[keyof T]>;
 
+export type ParameterName<T extends (...args: [any, any]) => any> = T extends (
+  context: any,
+  ...args: infer P
+) => any
+  ? P
+  : never;
+
 export type inferMutations<T> = T extends (state: any, payload: infer P) => void
   ? IsValidArg<P> extends true
-    ? (payload: P) => void
+    ? (...args: ParameterName<T>) => void
     : () => void
   : () => void;
 
 export type inferActions<T extends ActionHandler<any, any>> = T extends (
-  context,
+  context: any,
   payload: infer P
 ) => any
   ? IsValidArg<P> extends true
-    ? (payload: P) => ReturnType<T>
+    ? (...args: ParameterName<T>) => ReturnType<T>
     : () => ReturnType<T>
   : ReturnType<T>;
 
