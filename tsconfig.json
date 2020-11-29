@@ -10,6 +10,7 @@
     "removeComments": true,
     "noImplicitAny": false,
     "noUnusedLocals": false,
+    "strictNullChecks": true,
     "pretty": true,
     "sourceMap": false,
     "downlevelIteration": true,

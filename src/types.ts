@@ -59,22 +59,5 @@ export type StoreModuleType = {
 
 export type SharedMutations<S> = {
   resetState(): void;
-  updateState(params: Partial<S>): void;
-  updateListItem<T extends keyof KeepProperties<S, any[]>>(
-    key: T,
-    identifier: S[T] extends Array<any> ? { [K in keyof S[T][0]]+?: S[T][0][K] } : any,
-    data: S[T] extends Array<any> ? { [K in keyof S[T][0]]+?: S[T][0][K] } : any
-  ): void;
-  removeListItem<T extends keyof KeepProperties<S, any[]>>(
-    key: T,
-    identifier: S[T] extends Array<any> ? { [K in keyof S[T][0]]+?: S[T][0][K] } : any
-  ): void;
-  addListItem<T extends keyof KeepProperties<S, any[]>>(
-    key: T,
-    data: S[T] extends Array<any> ? { [K in keyof S[T][0]]+?: S[T][0][K] } : any
-  ): void;
-  concatList<T extends keyof KeepProperties<S, any[]>>(
-    key: T,
-    data: S[T] extends Array<any> ? S[T] : any
-  );
+  updateState(callback: (state: S) => Partial<S>): void;
 };
