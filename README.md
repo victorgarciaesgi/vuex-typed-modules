@@ -155,7 +155,7 @@ export default class TestView extends Vue {
 
 ## Default module helpers
 
-Vuex types modules also add 2 helpers functions on top of your module
+Vuex types modules also add helpers functions on top of your module to prevent from writing short mutations
 
 ```typescript
 YourModule.helpers.resetState();
@@ -194,21 +194,3 @@ YourModule.helpers.concatList('users', [{ id: 5, name: 'Bar' }]);
 ```
 
 Will concate an array with an list of your state
-
-## Autocomplete and type safety exemple
-
-The module show only what you gave him
-
-![autocomplete1](https://github.com/victorgarciaesgi/Vuex-typed-modules/blob/master/captures/autocomplete1.png?raw=true)
-
-It suggests all the related mutations/getters/actions/state
-
-![autocomplete2](https://github.com/victorgarciaesgi/Vuex-typed-modules/blob/master/captures/autocomplete2.png?raw=true)
-
-It shows correctly what each function returns
-
-![autocomplete3](https://github.com/victorgarciaesgi/Vuex-typed-modules/blob/master/captures/autocomplete3.png?raw=true)
-
-And it keeps the call signature of the original function
-
-![autocomplete4](https://github.com/victorgarciaesgi/Vuex-typed-modules/blob/master/captures/autocomplete4.png?raw=true)
