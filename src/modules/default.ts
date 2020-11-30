@@ -1,134 +1,131 @@
 import * as Vuex from 'vuex';
 import { ReturnedGetters, ReturnedActions, ReturnedMutations, SharedMutations } from '../types';
-import { buildModifiers } from '../modifiers';
-import { buildHelpers, setHelpers } from './helpers';
+import { buildModifiers } from '../utils/modifiers';
+import { setHelpers } from './helpers';
 
-export interface DefaultVuexModuleArgs<S extends Record<string, any>> {
+export interface VuexModuleArgs<
+  S extends Record<string, any>,
+  G extends Vuex.GetterTree<S, any> = never,
+  M extends Vuex.MutationTree<S> = never,
+  A extends Record<string, Vuex.ActionHandler<S, any>> = never
+> {
   name: string;
   state: S;
+  getters?: G;
+  mutations?: M;
+  actions?: A;
   options?: Vuex.ModuleOptions;
   logger?: boolean;
 }
-export type SharedReturn<S> = SharedMutations<S> & {
-  state: S;
-};
 
-// Overloads
-
-export function defineVuexModule<S extends Record<string, any>, M extends Vuex.MutationTree<S>>(
-  args: DefaultVuexModuleArgs<S> & { mutations: M }
-): SharedReturn<S> & {
-  mutations: ReturnedMutations<M>;
-};
-export function defineVuexModule<S extends Record<string, any>, G extends Vuex.GetterTree<S, any>>(
-  args: DefaultVuexModuleArgs<S> & { getters: G }
-): SharedReturn<S> & {
-  getters: ReturnedGetters<G>;
-};
-export function defineVuexModule<
-  S extends Record<string, any>,
-  A extends Record<string, Vuex.ActionHandler<S, any>>
->(
-  args: DefaultVuexModuleArgs<S> & { actions: A }
-): SharedReturn<S> & {
-  actions: ReturnedActions<A>;
-};
-export function defineVuexModule<
-  S extends Record<string, any>,
-  M extends Vuex.MutationTree<S>,
-  A extends Record<string, Vuex.ActionHandler<S, any>>
->(
-  args: DefaultVuexModuleArgs<S> & { mutations: M; actions: A }
-): SharedReturn<S> & {
-  actions: ReturnedActions<A>;
-  mutations: ReturnedMutations<M>;
-};
-export function defineVuexModule<
-  S extends Record<string, any>,
-  M extends Vuex.MutationTree<S>,
-  G extends Vuex.GetterTree<S, any>
->(
-  args: DefaultVuexModuleArgs<S> & { getters: G; mutations: M }
-): SharedReturn<S> & {
-  getters: ReturnedGetters<G>;
-  mutations: ReturnedMutations<M>;
-};
-export function defineVuexModule<
-  S extends Record<string, any>,
-  G extends Vuex.GetterTree<S, any>,
-  A extends Record<string, Vuex.ActionHandler<S, any>>
->(
-  args: DefaultVuexModuleArgs<S> & { getters: G; actions: A }
-): SharedReturn<S> & {
-  getters: ReturnedGetters<G>;
-  actions: ReturnedActions<A>;
-};
-export function defineVuexModule<
+export class VuexModule<
   S extends Record<string, any>,
   M extends Vuex.MutationTree<S>,
   G extends Vuex.GetterTree<S, any>,
   A extends Record<string, Vuex.ActionHandler<S, any>>
->({
-  logger = true,
-  ...args
-}: DefaultVuexModuleArgs<S> & { getters: G; mutations: M; actions: A }): SharedReturn<S> & {
-  getters: ReturnedGetters<G>;
-  actions: ReturnedActions<A>;
-  mutations: ReturnedMutations<M>;
-} {
-  let helpers = {};
-  let mutations = {};
-  let actions = {};
-  let getters = {};
-  let _reactiveState = () => {};
+> {
+  protected name!: string;
+  protected _initialState!: S;
+  protected _getters?: Vuex.GetterTree<S, any>;
+  protected _mutations?: Vuex.MutationTree<S>;
+  protected _actions?: A;
+  protected _options?: Vuex.ModuleOptions;
+  protected _logger: boolean;
+  protected store!: Vuex.Store<S>;
 
-  function activate(store: Vuex.Store<any>): void {
-    if (store.hasModule(args.name)) {
-      console.info(`Module ${args.name} still active, skipping activation`);
+  public getters: G extends never ? undefined : ReturnedGetters<G>;
+  public actions: A extends never ? undefined : ReturnedActions<A>;
+  public mutations: M extends never ? undefined : ReturnedMutations<M>;
+  public state!: S;
+
+  constructor({
+    name,
+    state,
+    actions,
+    getters,
+    mutations,
+    options,
+    logger = true,
+  }: VuexModuleArgs<S, G, M, A>) {
+    this.name = name;
+    this._initialState = state;
+    this._getters = getters;
+    this._actions = actions;
+    this._mutations = mutations;
+    this._options = options;
+    this._logger = logger;
+  }
+
+  public resetState() {
+    this.store.commit(`${this.name}/resetState`);
+  }
+  public updateState(callback: (state: S) => Partial<S>) {
+    const storeState = this.store.state[this.name];
+    const updatedState = callback.call(storeState);
+    const mergedState = {
+      ...storeState,
+      ...updatedState,
+    };
+    this.store.commit(`${this.name}/updateState`, mergedState);
+  }
+
+  public extract() {
+    return {
+      name: this.name,
+      state: this._initialState,
+      getters: this._getters,
+      actions: this._actions,
+      mutations: this._mutations,
+      options: this._options,
+    };
+  }
+  protected activate(store: Vuex.Store<any>): void {
+    let { name, actions, getters, mutations, state, options } = this.extract();
+    this.store = store;
+
+    if (store.hasModule(name)) {
+      console.info(`Module ${name} still active, skipping activation`);
       return;
     } else {
-      const moduleName = args.name;
-      const _mutations = setHelpers(args.mutations, args.state);
+      const moduleName = name;
+      if (mutations == null && mutations === undefined) {
+        mutations = {};
+      }
+      mutations = setHelpers(state, mutations);
       store.registerModule(
         moduleName,
         {
           namespaced: true,
-          actions: args.actions,
-          getters: args.getters,
-          mutations: _mutations,
-          state: args.state,
+          actions,
+          getters,
+          mutations,
+          state,
         },
-        args.options
+        options
       );
       const { registerActions, registerGetters, registerMutations, reactiveState } = buildModifiers(
         store,
-        moduleName
+        this.name
       );
-      helpers = buildHelpers(store, moduleName);
-      mutations = registerMutations(_mutations);
-      actions = registerActions(args.actions);
-      getters = registerGetters(args.mutations);
-      _reactiveState = reactiveState;
+      this.mutations = registerMutations(this._mutations);
+      this.actions = registerActions(this._actions);
+      this.getters = registerGetters(this._getters);
+      Object.defineProperty(this, 'state', {
+        enumerable: true,
+        configurable: true,
+        get() {
+          return reactiveState();
+        },
+      });
     }
   }
 
-  function deploy(store: Vuex.Store<any>) {
-    activate(store);
+  public deploy(store: Vuex.Store<any>) {
+    this.activate(store);
   }
-  return {
-    actions,
-    mutations,
-    getters,
-    get state() {
-      return _reactiveState();
-    },
-    ...helpers,
-    deploy,
-    activate,
-  } as any;
 }
 
-// const test = defineVuexModule({
+// const test = new VuexModule({
 //   name: 'zefez',
 //   state: {
 //     foo: 'bar',
@@ -139,8 +136,6 @@ export function defineVuexModule<
 //     },
 //   },
 //   actions: {
-//     test(_, param: string) {},
+//     test() {},
 //   },
 // });
-// // @ts-expect-error
-// test.actions.test();

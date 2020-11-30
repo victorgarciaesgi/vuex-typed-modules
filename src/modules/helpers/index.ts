@@ -1,8 +1,8 @@
-import { SharedMutations } from '@/types';
+import { SharedMutations } from '../../types';
 import Vue from 'vue';
 import * as Vuex from 'vuex';
 
-export const setHelpers = (state: any, mutations?: Vuex.MutationTree<any>) => {
+export const setHelpers = (state: Record<string, any>, mutations?: Vuex.MutationTree<any>) => {
   let _mutations = mutations ?? {};
   _mutations.resetState = (moduleState) => {
     Object.keys(state).map((key) => {
@@ -15,21 +15,4 @@ export const setHelpers = (state: any, mutations?: Vuex.MutationTree<any>) => {
     });
   };
   return _mutations;
-};
-
-export const buildHelpers = (store: Vuex.Store<any>, name: string): SharedMutations<any> => {
-  return {
-    resetState() {
-      store.commit(`${name}/resetState`);
-    },
-    updateState(params) {
-      const storeState = store.state[name];
-      const updatedState = params.call(storeState);
-      const mergedState = {
-        ...storeState,
-        ...updatedState,
-      };
-      store.commit(`${name}/updateState`, mergedState);
-    },
-  };
 };

@@ -18,10 +18,6 @@
     "declarationDir": "./types",
     "baseUrl": ".",
     "declaration": true,
-    "paths": {
-      "@/*": ["src/*"]
-    },
-
     "outDir": "./dist",
     "types": ["node", "webpack-env"],
     "lib": ["esnext", "dom", "dom.iterable", "scripthost"]

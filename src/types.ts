@@ -1,4 +1,4 @@
-import { Getter, GetterTree, ActionTree, Action, ActionHandler } from 'vuex';
+import { Getter, GetterTree, ActionHandler } from 'vuex';
 
 export type IsValidArg<T> = T extends unknown ? (keyof T extends never ? false : true) : true;
 export type Dictionary<T> = { [x: string]: T };
