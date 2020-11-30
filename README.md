@@ -21,6 +21,10 @@ It also comes with an vuex action logger
 
 ![actionsloggers](https://github.com/victorgarciaesgi/vuex-typed-modules/blob/master/captures/actionlogger.png?raw=true)
 
+# Breaking changes in 3.0
+
+- `updateState` now accepts a callback with the state as param. All others update helpers removed
+
 ## Installation
 
 ```bash
@@ -163,28 +167,12 @@ YourModule.helpers.resetState();
 ```
 
 ```typescript
-YourModule.helpers.updateState({
+YourModule.helpers.updateState(() => ({
   count: 3,
-});
+}));
+
+YourModule.helpers.updateState((state) => ({
+  count: state.count + 5,
+}));
 // Is like a mutation wrapper arround all your module state for simple state change (With type check)
-```
-
-```typescript
-YourModule.helpers.addListItem('users', { id: 2, name: 'Test' });
-// Will add an item to the list of your choice (type safe)
-```
-
-```typescript
-YourModule.helpers.removeListItem('users', { id: 2 });
-// Will remove an item from a list with the help of an identifier
-```
-
-```typescript
-YourModule.helpers.updateListItem('users', { id: 2 }, { name: 'Test2' });
-// Will update an item from a list with the help of an identifier
-```
-
-```typescript
-YourModule.helpers.concatList('users', [{ id: 5, name: 'Bar' }]);
-// Will concate an array with an list of your state
 ```
