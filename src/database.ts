@@ -1,7 +1,7 @@
 import * as Vuex from 'vuex';
-import { VuexModule } from './Module';
-import { setHelpers } from './Helpers';
-import { VuexDynamicModule } from './DynamicModule';
+import { VuexModule } from './modules/default';
+import { setHelpers } from './modules/helpers';
+import { VuexDynamicModule } from './modules/dynamic';
 
 interface DataBaseOptions {
   logger?: boolean;
@@ -11,7 +11,6 @@ type DefaultModule = VuexModule<any, any, any, any> | VuexDynamicModule<any, any
 
 export class Database {
   private store!: Vuex.Store<any>;
-  private modules: (Vuex.Module<any, any> & { name: string })[] = [];
   private options!: DataBaseOptions;
   private loggerBlackList: string[] = [];
 

@@ -1,7 +1,7 @@
 import * as Vuex from 'vuex';
-import { ReturnedGetters, ReturnedActions, ReturnedMutations, SharedMutations } from './types';
-import { buildModifiers } from './modifiers';
-import { buildHelpers, setHelpers } from './Helpers';
+import { ReturnedGetters, ReturnedActions, ReturnedMutations, SharedMutations } from '../types';
+import { buildModifiers } from '../utils/modifiers';
+import { setHelpers } from './helpers';
 
 export interface VuexModuleArgs<
   S extends Record<string, any>,
@@ -26,17 +26,17 @@ export class VuexModule<
 > {
   protected name!: string;
   protected _initialState!: S;
-  protected _getters!: Vuex.GetterTree<S, any>;
-  protected _mutations!: Vuex.MutationTree<S>;
-  protected _actions!: A;
-  protected _options: Vuex.ModuleOptions;
+  protected _getters?: Vuex.GetterTree<S, any>;
+  protected _mutations?: Vuex.MutationTree<S>;
+  protected _actions?: A;
+  protected _options?: Vuex.ModuleOptions;
   protected _logger: boolean;
+  protected store!: Vuex.Store<S>;
 
   public getters: G extends never ? undefined : ReturnedGetters<G>;
   public actions: A extends never ? undefined : ReturnedActions<A>;
   public mutations: M extends never ? undefined : ReturnedMutations<M>;
   public state!: S;
-  public helpers!: SharedMutations<S>;
 
   constructor({
     name,
@@ -56,6 +56,19 @@ export class VuexModule<
     this._logger = logger;
   }
 
+  public resetState() {
+    this.store.commit(`${this.name}/resetState`);
+  }
+  public updateState(callback: (state: S) => Partial<S>) {
+    const storeState = this.store.state[this.name];
+    const updatedState = callback.call(storeState);
+    const mergedState = {
+      ...storeState,
+      ...updatedState,
+    };
+    this.store.commit(`${this.name}/updateState`, mergedState);
+  }
+
   public extract() {
     return {
       name: this.name,
@@ -66,8 +79,9 @@ export class VuexModule<
       options: this._options,
     };
   }
-  protected activate(store: Vuex.Store<any>, nestedName?: string): void {
+  protected activate(store: Vuex.Store<any>): void {
     let { name, actions, getters, mutations, state, options } = this.extract();
+    this.store = store;
 
     if (store.hasModule(name)) {
       console.info(`Module ${name} still active, skipping activation`);
@@ -77,7 +91,7 @@ export class VuexModule<
       if (mutations == null && mutations === undefined) {
         mutations = {};
       }
-      setHelpers(mutations, state);
+      mutations = setHelpers(state, mutations);
       store.registerModule(
         moduleName,
         {
@@ -93,7 +107,6 @@ export class VuexModule<
         store,
         this.name
       );
-      this.helpers = buildHelpers(store, this.name);
       this.mutations = registerMutations(this._mutations);
       this.actions = registerActions(this._actions);
       this.getters = registerGetters(this._getters);

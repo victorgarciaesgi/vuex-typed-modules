@@ -1,5 +1,5 @@
 import * as Vuex from 'vuex';
-import { VuexModule, VuexModuleArgs } from './Module';
+import { VuexModule, VuexModuleArgs } from './default';
 export declare type ModuleToInstance<TModule> = TModule extends VuexDynamicModule<infer S, infer M, infer G, infer A> ? DynamicModuleInstance<S, M, G, A> : TModule;
 export declare class VuexDynamicModule<S extends Record<string, any>, M extends Vuex.MutationTree<S>, G extends Vuex.GetterTree<S, any>, A extends Record<string, Vuex.ActionHandler<any, any>>> {
     private nestedName?;
@@ -9,7 +9,7 @@ export declare class VuexDynamicModule<S extends Record<string, any>, M extends 
     private getters;
     private mutations;
     private actions;
-    private options;
+    private options?;
     private store;
     protected _logger: boolean;
     private get params();
@@ -20,10 +20,8 @@ export declare class VuexDynamicModule<S extends Record<string, any>, M extends 
 }
 export declare class DynamicModuleInstance<S extends Record<string, any>, M extends Vuex.MutationTree<S>, G extends Vuex.GetterTree<S, any>, A extends Record<string, Vuex.ActionHandler<any, any>>> extends VuexModule<S, M, G, A> {
     private nestedName?;
-    private store;
     constructor({ store, ...args }: VuexModuleArgs<S, G, M, A> & {
-        store: Vuex.Store<any>;
+        store: Vuex.Store<S>;
     });
-    register(): void;
     unregister(): void;
 }

@@ -2,11 +2,11 @@ import * as Vuex from 'vuex';
 
 export function createModuleLayers(store: Vuex.Store<any>, moduleName: string) {
   function commit(name) {
-    return payload => store.commit(moduleName + '/' + name, payload);
+    return (payload) => store.commit(moduleName + '/' + name, payload);
   }
 
   function dispatch(name) {
-    return payload => store.dispatch(moduleName + '/' + name, payload);
+    return (payload) => store.dispatch(moduleName + '/' + name, payload);
   }
 
   function read(name) {
@@ -31,27 +31,27 @@ export function createModuleLayers(store: Vuex.Store<any>, moduleName: string) {
 export function buildModifiers(store: Vuex.Store<any>, name: string) {
   const { commit, dispatch, read, state } = createModuleLayers(store, name);
 
-  const registerMutations = mutations => {
+  const registerMutations = (mutations) => {
     const renderedMutations = {};
     if (mutations) {
-      Object.keys(mutations).forEach(key => {
+      Object.keys(mutations).forEach((key) => {
         renderedMutations[key] = commit(key);
       });
     }
     return renderedMutations as any;
   };
 
-  const registerActions = actions => {
+  const registerActions = (actions) => {
     const renderedActions = {};
     if (actions) {
-      Object.keys(actions).forEach(key => {
+      Object.keys(actions).forEach((key) => {
         renderedActions[key] = dispatch(key);
       });
     }
     return renderedActions as any;
   };
 
-  const registerGetters = getters => {
+  const registerGetters = (getters) => {
     const renderedGetters = {};
     if (getters) {
       Object.keys(getters).forEach((key: any) => {

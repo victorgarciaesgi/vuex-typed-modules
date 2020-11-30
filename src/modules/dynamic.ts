@@ -1,6 +1,6 @@
 import { log } from 'console';
 import * as Vuex from 'vuex';
-import { VuexModule, VuexModuleArgs } from './Module';
+import { VuexModule, VuexModuleArgs } from './default';
 
 export type ModuleToInstance<TModule> = TModule extends VuexDynamicModule<
   infer S,
@@ -24,7 +24,7 @@ export class VuexDynamicModule<
   private getters!: any;
   private mutations!: any;
   private actions!: any;
-  private options: Vuex.ModuleOptions;
+  private options?: Vuex.ModuleOptions;
   private store: Vuex.Store<any>;
 
   protected _logger: boolean;
@@ -73,7 +73,6 @@ export class VuexDynamicModule<
     this.nestedName = moduleName;
     let fullName = this.name;
     this.module = new DynamicModuleInstance({ name: fullName, ...this.params, store: this.store });
-    this.module.register();
     return this.module;
   }
 }
@@ -85,14 +84,10 @@ export class DynamicModuleInstance<
   A extends Record<string, Vuex.ActionHandler<any, any>>
 > extends VuexModule<S, M, G, A> {
   private nestedName?: string;
-  private store: Vuex.Store<any>;
-  constructor({ store, ...args }: VuexModuleArgs<S, G, M, A> & { store: Vuex.Store<any> }) {
+  constructor({ store, ...args }: VuexModuleArgs<S, G, M, A> & { store: Vuex.Store<S> }) {
     super(args);
     this.store = store;
-  }
-
-  public register(): void {
-    this.activate(this.store);
+    this.activate(store);
   }
 
   public unregister(): void {
