@@ -59,12 +59,13 @@ export class VuexModule<
   public resetState() {
     this.store.commit(`${this.name}/resetState`);
   }
-  public updateState(callback: (state: S) => Partial<S>) {
+  public updateState(callback: (state: S) => Partial<S> | void) {
     const storeState = this.store.state[this.name];
-    const updatedState = callback.call(storeState);
+    const updatedState = callback(storeState);
+    let stateToUpdate = updatedState ?? storeState;
     const mergedState = {
       ...storeState,
-      ...updatedState,
+      ...stateToUpdate,
     };
     this.store.commit(`${this.name}/updateState`, mergedState);
   }

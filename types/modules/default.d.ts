@@ -24,7 +24,7 @@ export declare class VuexModule<S extends Record<string, any>, M extends Vuex.Mu
     state: S;
     constructor({ name, state, actions, getters, mutations, options, logger, }: VuexModuleArgs<S, G, M, A>);
     resetState(): void;
-    updateState(callback: (state: S) => Partial<S>): void;
+    updateState(callback: (state: S) => Partial<S> | void): void;
     extract(): {
         name: string;
         state: S;
