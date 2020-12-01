@@ -69,7 +69,9 @@ export class VuexDynamicModule<
     this.store = store;
   }
 
-  public register(moduleName?: string): DynamicModuleInstance<S, M, G, A> {
+  public instance<NewState extends S = S>(
+    moduleName?: string
+  ): DynamicModuleInstance<NewState, M, G, A> {
     this.nestedName = moduleName;
     let fullName = this.name;
     this.module = new DynamicModuleInstance({ name: fullName, ...this.params, store: this.store });
@@ -84,17 +86,22 @@ export class DynamicModuleInstance<
   A extends Record<string, Vuex.ActionHandler<any, any>>
 > extends VuexModule<S, M, G, A> {
   private nestedName?: string;
+  public isRegistered: boolean = false;
+
   constructor({ store, ...args }: VuexModuleArgs<S, G, M, A> & { store: Vuex.Store<S> }) {
     super(args);
     this.store = store;
-    this.activate(store);
+  }
+
+  public register() {
+    this.isRegistered = true;
+    this.activate(this.store);
   }
 
   public unregister(): void {
     this.store.unregisterModule(
       (this.nestedName ? [this.name, this.nestedName] : this.name) as any
     );
-    this.nestedName = '';
-    this.name = this.name.split('/')[0];
+    this.isRegistered = true;
   }
 }

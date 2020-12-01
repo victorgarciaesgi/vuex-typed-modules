@@ -142,16 +142,20 @@ export const testModule = new VuexDynamicModule({
 import { Component, Vue } from 'vue-property-decorator';
 import { testModule } from '~/modules';
 
+const ChildStoreModule = testModule.instance('child-store');
+
 @Component
 export default class TestView extends Vue {
-  readonly module = testModule.register('child-store');
-
   get count() {
-    return this.module.state.count;
+    return ChildStoreModule.state.count;
+  }
+
+  created() {
+    ChildStoreModule.register();
   }
 
   beforeDestroy() {
-    this.module.unregister();
+    ChildStoreModule.unregister();
   }
 }
 </script>

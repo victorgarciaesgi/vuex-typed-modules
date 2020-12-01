@@ -84,7 +84,7 @@ export class VuexModule<
     this.store = store;
 
     if (store.hasModule(name)) {
-      console.info(`Module ${name} still active, skipping activation`);
+      console.log(`%c Module "${name}" still active, skipping activation`, 'color: #4287f5');
       return;
     } else {
       const moduleName = name;
