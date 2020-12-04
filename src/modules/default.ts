@@ -1,5 +1,5 @@
 import * as Vuex from 'vuex';
-import { ReturnedGetters, ReturnedActions, ReturnedMutations, SharedMutations } from '../types';
+import { ReturnedGetters, ReturnedActions, ReturnedMutations, ActionBush } from '../types';
 import { buildModifiers } from '../utils/modifiers';
 import { setHelpers } from './helpers';
 
@@ -7,7 +7,7 @@ export interface VuexModuleArgs<
   S extends Record<string, any>,
   G extends Vuex.GetterTree<S, any> = never,
   M extends Vuex.MutationTree<S> = never,
-  A extends Record<string, Vuex.ActionHandler<S, any>> = never
+  A extends ActionBush<S> = never
 > {
   name: string;
   state: S;
@@ -22,7 +22,7 @@ export class VuexModule<
   S extends Record<string, any>,
   M extends Vuex.MutationTree<S>,
   G extends Vuex.GetterTree<S, any>,
-  A extends Record<string, Vuex.ActionHandler<S, any>>
+  A extends ActionBush<S>
 > {
   protected name!: string;
   protected _initialState!: S;
@@ -33,9 +33,9 @@ export class VuexModule<
   protected _logger: boolean;
   protected store!: Vuex.Store<S>;
 
-  public getters: G extends never ? undefined : ReturnedGetters<G>;
-  public actions: A extends never ? undefined : ReturnedActions<A>;
-  public mutations: M extends never ? undefined : ReturnedMutations<M>;
+  public getters: ReturnedGetters<G>;
+  public actions: ReturnedActions<A>;
+  public mutations: ReturnedMutations<M>;
   public state!: S;
 
   constructor({
@@ -59,15 +59,19 @@ export class VuexModule<
   public resetState() {
     this.store.commit(`${this.name}/resetState`);
   }
-  public updateState(callback: (state: S) => Partial<S> | void) {
+  public updateState(callback: ((state: S) => Partial<S> | void) | Partial<S>) {
     const storeState = this.store.state[this.name];
-    const updatedState = callback(storeState);
-    let stateToUpdate = updatedState ?? storeState;
-    const mergedState = {
-      ...storeState,
-      ...stateToUpdate,
-    };
-    this.store.commit(`${this.name}/updateState`, mergedState);
+    let updatedState: Partial<S> | null = null;
+    if (callback instanceof Function) {
+      const returnedKeys = callback(storeState);
+      if (returnedKeys) {
+        updatedState = returnedKeys;
+      }
+    } else {
+      updatedState = callback;
+    }
+    const stateToUpdate = updatedState ?? storeState;
+    this.store.commit(`${this.name}/updateState`, stateToUpdate);
   }
 
   public extract() {
@@ -75,7 +79,7 @@ export class VuexModule<
       name: this.name,
       state: this._initialState,
       getters: this._getters,
-      actions: this._actions,
+      actions: this._actions as any,
       mutations: this._mutations,
       options: this._options,
     };
@@ -137,6 +141,8 @@ export class VuexModule<
 //     },
 //   },
 //   actions: {
-//     test() {},
+//     test({ commit, state, getters }) {
+//       state.foo
+//     },
 //   },
 // });

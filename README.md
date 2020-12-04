@@ -132,6 +132,13 @@ export const testModule = new VuexDynamicModule({
   state: {
     count: 1,
   },
+  actions: {
+    // Due to limitions of Typescript, I can't provide typings for infered mutations and getters inside the same object. It would make an infinite loop (I tried).
+    // For dynamic object you can fallback on "commit" "dispatch" and "getters"
+    exemple({ state, commit, dispatch, getters }, param: string) {
+      // ...
+    },
+  },
 });
 ```
 
@@ -171,12 +178,18 @@ YourModule.helpers.resetState();
 ```
 
 ```typescript
-YourModule.helpers.updateState(() => ({
+// You can specify only the property you want to update
+YourModule.helpers.updateState({
   count: 3,
+});
+
+// You can also give a callback function to have access to the current state
+YourModule.helpers.updateState((state) => ({
+  count: state.count + 2,
 }));
 
-YourModule.helpers.updateState((state) => ({
-  count: state.count + 5,
-}));
-// Is like a mutation wrapper arround all your module state for simple state change (With type check)
+// And also mutate the state directly (A bit heavier on the update)
+YourModule.helpers.updateState((state) => {
+  state.count++;
+});
 ```

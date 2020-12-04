@@ -1,4 +1,4 @@
-import { Getter, GetterTree, ActionHandler } from 'vuex';
+import { Getter, GetterTree, ActionHandler, MutationTree, Store, Dispatch } from 'vuex';
 export declare type IsValidArg<T> = T extends unknown ? (keyof T extends never ? false : true) : true;
 export declare type Dictionary<T> = {
     [x: string]: T;
@@ -10,22 +10,24 @@ export declare type ParameterName<T extends (...args: [any, any]) => any> = T ex
 export declare type inferMutations<T> = T extends (state: any, payload: infer P) => void ? IsValidArg<P> extends true ? (...args: ParameterName<T>) => void : () => void : () => void;
 export declare type inferActions<T extends ActionHandler<any, any>> = T extends (context: any, payload: infer P) => any ? IsValidArg<P> extends true ? (...args: ParameterName<T>) => ReturnType<T> : () => ReturnType<T> : ReturnType<T>;
 export declare type inferGetters<T extends Getter<any, any>> = T extends (state: any, getters?: any) => infer R ? R : void;
-export declare type MutationsPayload = {
-    [x: string]: (state: any, payload?: any) => void;
-};
-export declare type ActionsPayload = {
-    [x: string]: (context: any, payload?: any) => any;
-};
-export declare type GettersPayload = {
-    [x: string]: (state?: any, getters?: any) => any;
-};
+export interface RichActionContext<S, G extends ReturnedGetters<any>, M extends ReturnedMutations<any>> {
+    dispatch: Dispatch;
+    mutations: M;
+    state: S;
+    getters: G;
+}
+export declare type RichAction<S, G extends ReturnedGetters<any>, M extends ReturnedMutations<any>> = (this: Store<any>, injectee: RichActionContext<S, G, M>, payload?: any) => any;
+export interface RichActionTree<S, G extends ReturnedGetters<any>, M extends ReturnedMutations<any>> {
+    [x: string]: RichAction<S, G, M>;
+}
+export declare type ActionBush<S> = Record<string, ActionHandler<S, any>>;
 export declare type ReturnedGetters<T extends GetterTree<any, any>> = {
     [K in keyof T]: inferGetters<T[K]>;
 };
-export declare type ReturnedActions<T extends Record<string, ActionHandler<any, any>>> = {
+export declare type ReturnedActions<T extends ActionBush<any>> = {
     [K in keyof T]: inferActions<T[K]>;
 };
-export declare type ReturnedMutations<T extends MutationsPayload> = {
+export declare type ReturnedMutations<T extends MutationTree<any>> = {
     [K in keyof T]: inferMutations<T[K]>;
 };
 export declare type StoreModuleType = {

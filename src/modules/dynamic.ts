@@ -1,4 +1,3 @@
-import { log } from 'console';
 import * as Vuex from 'vuex';
 import { VuexModule, VuexModuleArgs } from './default';
 
@@ -102,6 +101,6 @@ export class DynamicModuleInstance<
     this.store.unregisterModule(
       (this.nestedName ? [this.name, this.nestedName] : this.name) as any
     );
-    this.isRegistered = true;
+    this.isRegistered = false;
   }
 }

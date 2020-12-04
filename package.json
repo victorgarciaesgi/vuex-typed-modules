@@ -1,6 +1,6 @@
 {
   "name": "vuex-typed-modules",
-  "version": "3.0.3",
+  "version": "3.0.5",
   "description": "A typescript wrapper for Vuex store with fully typed exposure",
   "keywords": [
     "vuex",
@@ -44,6 +44,7 @@
   "scripts": {
     "clean": "rimraf dist && rimraf types",
     "compile": "tsc --pretty",
+    "dev": "tsc --pretty --watch",
     "build": "yarn run clean && yarn run compile",
     "prepublish": "yarn build"
   }

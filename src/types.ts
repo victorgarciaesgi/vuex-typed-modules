@@ -1,4 +1,4 @@
-import { Getter, GetterTree, ActionHandler } from 'vuex';
+import { Getter, GetterTree, ActionHandler, MutationTree, Store, Dispatch } from 'vuex';
 
 export type IsValidArg<T> = T extends unknown ? (keyof T extends never ? false : true) : true;
 export type Dictionary<T> = { [x: string]: T };
@@ -30,23 +30,39 @@ export type inferGetters<T extends Getter<any, any>> = T extends (state, getters
   ? R
   : void;
 
-export type MutationsPayload = {
-  [x: string]: (state: any, payload?: any) => void;
-};
-export type ActionsPayload = {
-  [x: string]: (context: any, payload?: any) => any;
-};
-export type GettersPayload = {
-  [x: string]: (state?: any, getters?: any) => any;
-};
+export interface RichActionContext<
+  S,
+  G extends ReturnedGetters<any>,
+  M extends ReturnedMutations<any>
+> {
+  dispatch: Dispatch;
+  mutations: M;
+  state: S;
+  getters: G;
+}
+export type RichAction<S, G extends ReturnedGetters<any>, M extends ReturnedMutations<any>> = (
+  this: Store<any>,
+  injectee: RichActionContext<S, G, M>,
+  payload?: any
+) => any;
+
+export interface RichActionTree<
+  S,
+  G extends ReturnedGetters<any>,
+  M extends ReturnedMutations<any>
+> {
+  [x: string]: RichAction<S, G, M>;
+}
+
+export type ActionBush<S> = Record<string, ActionHandler<S, any>>;
 
 export type ReturnedGetters<T extends GetterTree<any, any>> = {
   [K in keyof T]: inferGetters<T[K]>;
 };
-export type ReturnedActions<T extends Record<string, ActionHandler<any, any>>> = {
+export type ReturnedActions<T extends ActionBush<any>> = {
   [K in keyof T]: inferActions<T[K]>;
 };
-export type ReturnedMutations<T extends MutationsPayload> = {
+export type ReturnedMutations<T extends MutationTree<any>> = {
   [K in keyof T]: inferMutations<T[K]>;
 };
 
