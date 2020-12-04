@@ -93,8 +93,8 @@ export class DynamicModuleInstance<
   }
 
   public register() {
-    this.isRegistered = true;
     this.activate(this.store);
+    this.isRegistered = true;
   }
 
   public unregister(): void {
