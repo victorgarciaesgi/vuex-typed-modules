@@ -11,12 +11,13 @@ export interface VuexModuleArgs<S extends Record<string, any>, G extends Vuex.Ge
 }
 export declare class VuexModule<S extends Record<string, any>, M extends Vuex.MutationTree<S>, G extends Vuex.GetterTree<S, any>, A extends ActionBush<S>> {
     protected name: string;
-    protected _initialState: S;
+    protected initialState: S;
     protected _getters?: Vuex.GetterTree<S, any>;
     protected _mutations?: Vuex.MutationTree<S>;
     protected _actions?: A;
     protected _options?: Vuex.ModuleOptions;
     protected _logger: boolean;
+    protected _state: S;
     protected store: Vuex.Store<S>;
     getters: ReturnedGetters<G>;
     actions: ReturnedActions<A>;

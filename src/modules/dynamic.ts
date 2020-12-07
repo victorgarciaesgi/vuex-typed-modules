@@ -1,6 +1,8 @@
 import * as Vuex from 'vuex';
 import { VuexModule, VuexModuleArgs } from './default';
 
+// function unWrapDynamicModule<T extends VuexDynamicModule<any, any, any, any>>(module: T) {}
+
 export type ModuleToInstance<TModule> = TModule extends VuexDynamicModule<
   infer S,
   infer M,

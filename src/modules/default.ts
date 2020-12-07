@@ -2,6 +2,7 @@ import * as Vuex from 'vuex';
 import { ReturnedGetters, ReturnedActions, ReturnedMutations, ActionBush } from '../types';
 import { buildModifiers } from '../utils/modifiers';
 import { setHelpers } from './helpers';
+import cloneDeep from 'lodash/cloneDeep';
 
 export interface VuexModuleArgs<
   S extends Record<string, any>,
@@ -25,18 +26,20 @@ export class VuexModule<
   A extends ActionBush<S>
 > {
   protected name!: string;
-  protected _initialState!: S;
+  protected initialState: S = {} as any;
   protected _getters?: Vuex.GetterTree<S, any>;
   protected _mutations?: Vuex.MutationTree<S>;
   protected _actions?: A;
   protected _options?: Vuex.ModuleOptions;
   protected _logger: boolean;
+  protected _state!: S;
+
   protected store!: Vuex.Store<S>;
 
   public getters: ReturnedGetters<G>;
   public actions: ReturnedActions<A>;
   public mutations: ReturnedMutations<M>;
-  public state!: S;
+  public state: S = {} as any;
 
   constructor({
     name,
@@ -47,8 +50,16 @@ export class VuexModule<
     options,
     logger = true,
   }: VuexModuleArgs<S, G, M, A>) {
+    Object.defineProperty(this, 'initialState', {
+      enumerable: false,
+      configurable: false,
+      get() {
+        return cloneDeep(state);
+      },
+      set() {},
+    });
     this.name = name;
-    this._initialState = state;
+    this._state = cloneDeep(state);
     this._getters = getters;
     this._actions = actions;
     this._mutations = mutations;
@@ -57,7 +68,7 @@ export class VuexModule<
   }
 
   public resetState() {
-    this.store.commit(`${this.name}/resetState`);
+    this.store.commit(`${this.name}/resetState`, this.initialState);
   }
   public updateState(callback: ((state: S) => Partial<S> | void) | Partial<S>) {
     const storeState = this.store.state[this.name];
@@ -77,7 +88,7 @@ export class VuexModule<
   public extract() {
     return {
       name: this.name,
-      state: this._initialState,
+      state: this._state,
       getters: this._getters,
       actions: this._actions as any,
       mutations: this._mutations,
@@ -96,7 +107,7 @@ export class VuexModule<
       if (mutations == null && mutations === undefined) {
         mutations = {};
       }
-      mutations = setHelpers(state, mutations);
+      mutations = setHelpers(mutations);
       store.registerModule(
         moduleName,
         {

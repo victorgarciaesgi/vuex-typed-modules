@@ -1,6 +1,6 @@
 {
   "name": "vuex-typed-modules",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "A typescript wrapper for Vuex store with fully typed exposure",
   "keywords": [
     "vuex",
@@ -27,8 +27,10 @@
     "vuex": "3.x"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.165",
     "@types/node": "^14.14.9",
     "@types/webpack-env": "^1.16.0",
+    "lodash": "^4.17.20",
     "rimraf": "^3.0.2"
   },
   "dependencies": {

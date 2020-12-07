@@ -122,7 +122,7 @@ export default class Home extends Vue {
 
 ## Dynamic Modules
 
-For dynamic modules, simply call the function `VuexDynamicModule` instead
+For dynamic modules, simply use the class `VuexDynamicModule` instead
 
 ```typescript
 import { VuexDynamicModule } from 'vuex-typed-modules';
@@ -133,8 +133,9 @@ export const testModule = new VuexDynamicModule({
     count: 1,
   },
   actions: {
-    // Due to limitions of Typescript, I can't provide typings for infered mutations and getters inside the same object. It would make an infinite loop (I tried).
-    // For dynamic object you can fallback on "commit" "dispatch" and "getters"
+    // Due to limitions of Typescript, I can't provide typings for infered mutations and getters inside the same object.
+    // It would make an infinite loop (I tried).
+    // For dynamic module you can fallback on "commit" "dispatch" and "getters"
     exemple({ state, commit, dispatch, getters }, param: string) {
       // ...
     },
