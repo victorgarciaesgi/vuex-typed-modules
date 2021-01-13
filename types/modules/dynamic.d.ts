@@ -1,7 +1,7 @@
 import * as Vuex from 'vuex';
 import { VuexModule, VuexModuleArgs } from './default';
 export declare type ModuleToInstance<TModule> = TModule extends VuexDynamicModule<infer S, infer M, infer G, infer A> ? DynamicModuleInstance<S, M, G, A> : TModule;
-export declare class VuexDynamicModule<S extends Record<string, any>, M extends Vuex.MutationTree<S>, G extends Vuex.GetterTree<S, any>, A extends Record<string, Vuex.ActionHandler<any, any>>> {
+export declare class VuexDynamicModule<S extends Record<string, any>, M extends Vuex.MutationTree<S>, G extends Vuex.GetterTree<S, any>, A extends Record<string, Vuex.ActionHandler<S, any>>> {
     private nestedName?;
     private namespaceName;
     private module;

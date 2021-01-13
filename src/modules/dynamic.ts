@@ -16,7 +16,7 @@ export class VuexDynamicModule<
   S extends Record<string, any>,
   M extends Vuex.MutationTree<S>,
   G extends Vuex.GetterTree<S, any>,
-  A extends Record<string, Vuex.ActionHandler<any, any>>
+  A extends Record<string, Vuex.ActionHandler<S, any>>
 > {
   private nestedName?: string;
   private namespaceName!: string;
