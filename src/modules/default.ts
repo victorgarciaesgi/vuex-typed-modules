@@ -21,9 +21,9 @@ export interface VuexModuleArgs<
 
 export class VuexModule<
   S extends Record<string, any>,
-  M extends Vuex.MutationTree<S>,
-  G extends Vuex.GetterTree<S, any>,
-  A extends ActionBush<S>
+  M extends Vuex.MutationTree<S> = {},
+  G extends Vuex.GetterTree<S, any> = {},
+  A extends ActionBush<S> = {}
 > {
   protected name!: string;
   protected initialState: S = {} as any;
@@ -146,14 +146,7 @@ export class VuexModule<
 //   state: {
 //     foo: 'bar',
 //   },
-//   mutations: {
-//     boo(state) {
-//       state.foo;
-//     },
-//   },
 //   actions: {
-//     test({ commit, state, getters }) {
-//       state.foo
-//     },
+//     test() {},
 //   },
 // });

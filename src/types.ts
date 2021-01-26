@@ -4,6 +4,8 @@ export type IsValidArg<T> = T extends unknown ? (keyof T extends never ? false :
 export type Dictionary<T> = { [x: string]: T };
 export type KeepProperties<T, P> = Pick<T, { [K in keyof T]: T[K] extends P ? K : never }[keyof T]>;
 
+export type isEmpty<T extends Record<string, any>> = keyof T extends never ? true : false;
+
 export type ParameterName<T extends (...args: [any, any]) => any> = T extends (
   context: any,
   ...args: infer P
@@ -56,15 +58,21 @@ export interface RichActionTree<
 
 export type ActionBush<S> = Record<string, ActionHandler<S, any>>;
 
-export type ReturnedGetters<T extends GetterTree<any, any>> = {
-  [K in keyof T]: inferGetters<T[K]>;
-};
-export type ReturnedActions<T extends ActionBush<any>> = {
-  [K in keyof T]: inferActions<T[K]>;
-};
-export type ReturnedMutations<T extends MutationTree<any>> = {
-  [K in keyof T]: inferMutations<T[K]>;
-};
+export type ReturnedGetters<T extends GetterTree<any, any>> = isEmpty<T> extends true
+  ? never
+  : {
+      [K in keyof T]: inferGetters<T[K]>;
+    };
+export type ReturnedActions<T extends ActionBush<any>> = isEmpty<T> extends true
+  ? never
+  : {
+      [K in keyof T]: inferActions<T[K]>;
+    };
+export type ReturnedMutations<T extends MutationTree<any>> = isEmpty<T> extends true
+  ? never
+  : {
+      [K in keyof T]: inferMutations<T[K]>;
+    };
 
 export type StoreModuleType = {
   getters?: ReturnedGetters<any>;
