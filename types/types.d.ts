@@ -6,7 +6,6 @@ export declare type Dictionary<T> = {
 export declare type KeepProperties<T, P> = Pick<T, {
     [K in keyof T]: T[K] extends P ? K : never;
 }[keyof T]>;
-export declare type isEmpty<T extends Record<string, any>> = keyof T extends never ? true : false;
 export declare type ParameterName<T extends (...args: [any, any]) => any> = T extends (context: any, ...args: infer P) => any ? P : never;
 export declare type inferMutations<T> = T extends (state: any, payload: infer P) => void ? IsValidArg<P> extends true ? (...args: ParameterName<T>) => void : () => void : () => void;
 export declare type inferActions<T extends ActionHandler<any, any>> = T extends (context: any, payload: infer P) => any ? IsValidArg<P> extends true ? (...args: ParameterName<T>) => ReturnType<T> : () => ReturnType<T> : ReturnType<T>;
@@ -22,13 +21,13 @@ export interface RichActionTree<S, G extends ReturnedGetters<any>, M extends Ret
     [x: string]: RichAction<S, G, M>;
 }
 export declare type ActionBush<S> = Record<string, ActionHandler<S, any>>;
-export declare type ReturnedGetters<T extends GetterTree<any, any>> = isEmpty<T> extends true ? never : {
+export declare type ReturnedGetters<T extends GetterTree<any, any>> = {
     [K in keyof T]: inferGetters<T[K]>;
 };
-export declare type ReturnedActions<T extends ActionBush<any>> = isEmpty<T> extends true ? never : {
+export declare type ReturnedActions<T extends ActionBush<any>> = {
     [K in keyof T]: inferActions<T[K]>;
 };
-export declare type ReturnedMutations<T extends MutationTree<any>> = isEmpty<T> extends true ? never : {
+export declare type ReturnedMutations<T extends MutationTree<any>> = {
     [K in keyof T]: inferMutations<T[K]>;
 };
 export declare type StoreModuleType = {
