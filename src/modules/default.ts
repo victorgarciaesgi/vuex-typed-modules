@@ -152,7 +152,7 @@ export class VuexModule<
 //     },
 //   },
 //   actions: {
-//     test({ commit, state, getters }, test?: string) {
+//     test({ commit, state, getters }, test: string | null) {
 //       state.foo;
 //     },
 //   },

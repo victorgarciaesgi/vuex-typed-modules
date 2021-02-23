@@ -1,7 +1,7 @@
 import { Getter, GetterTree, ActionHandler, MutationTree, Store, Dispatch } from 'vuex';
 
 export type IsValidArg<T> = T extends unknown
-  ? keyof Exclude<T, undefined> extends never
+  ? keyof Exclude<T, undefined | null> extends never
     ? false
     : true
   : true;
