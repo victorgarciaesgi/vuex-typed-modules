@@ -1,5 +1,5 @@
 import { Getter, GetterTree, ActionHandler, MutationTree, Store, Dispatch } from 'vuex';
-export declare type IsValidArg<T> = T extends unknown ? (keyof T extends never ? false : true) : true;
+export declare type IsValidArg<T> = T extends unknown ? keyof Exclude<T, undefined> extends never ? false : true : true;
 export declare type Dictionary<T> = {
     [x: string]: T;
 };

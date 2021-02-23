@@ -1,6 +1,11 @@
 import { Getter, GetterTree, ActionHandler, MutationTree, Store, Dispatch } from 'vuex';
 
-export type IsValidArg<T> = T extends unknown ? (keyof T extends never ? false : true) : true;
+export type IsValidArg<T> = T extends unknown
+  ? keyof Exclude<T, undefined> extends never
+    ? false
+    : true
+  : true;
+
 export type Dictionary<T> = { [x: string]: T };
 export type KeepProperties<T, P> = Pick<T, { [K in keyof T]: T[K] extends P ? K : never }[keyof T]>;
 
