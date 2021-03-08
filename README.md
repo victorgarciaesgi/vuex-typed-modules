@@ -87,7 +87,7 @@ new Vue({
 import * as Modules from '~/modules';
 
 const database = new Database({ logger: process.browser });
-const modules = Object.keys(Modules).map((key) => Modules[key]);
+const modules = Object.values(Modules);
 export const plugins = [database.deploy(modules)];
 
 export const state = () => ({});
