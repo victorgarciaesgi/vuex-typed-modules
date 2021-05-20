@@ -13,6 +13,8 @@
 
 A VueX wrapper to fully type your modules without more boilerplate
 
+> Working with Vue 2, and Vue 3 with Vuex4
+
 I'm realy greatly inspired by [@mrcrowl](https://github.com/mrcrowl) work and his lib [vuex-typex](https://github.com/mrcrowl/vuex-typex)
 
 I decided to take it a bit further and eliminating all boilerplate for declarating modules
