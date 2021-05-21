@@ -1,6 +1,12 @@
 import { VuexModuleArgs } from './default';
 import { MutationTree, Store, GetterTree } from 'vuex';
-import { ReturnedGetters, ReturnedActions, ReturnedMutations, ActionBush } from '../types';
+import {
+  ReturnedGetters,
+  ReturnedActions,
+  ReturnedMutations,
+  ActionBush,
+  SharedMutations,
+} from '../types';
 import { buildModifiers } from '../utils/modifiers';
 import cloneDeep from 'lodash/cloneDeep';
 import { isVue2, isVue3, getCurrentInstance, readonly, reactive, ref } from 'vue-demi';
@@ -21,9 +27,7 @@ export type VuexModuleHook<
   getters: ReturnedGetters<G>;
   mutations: ReturnedMutations<M>;
   actions: ReturnedActions<A>;
-  resetState: () => void;
-  updateState: (callback: ((state: S) => Partial<S> | void) | Partial<S>) => void;
-};
+} & SharedMutations<S>;
 
 export function createDefaultModuleHook<
   S extends Record<string, any>,

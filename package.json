@@ -1,6 +1,6 @@
 {
   "name": "vuex-typed-modules",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "description": "A typescript wrapper for Vuex store with fully typed exposure",
   "keywords": [
     "vuex",

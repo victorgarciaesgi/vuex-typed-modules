@@ -37,6 +37,6 @@ export declare type StoreModuleType = {
     state: any;
 } & SharedMutations<any>;
 export declare type SharedMutations<S> = {
-    resetState(): void;
-    updateState(callback: (state: S) => Partial<S>): void;
+    resetState: () => void;
+    updateState: (callback: ((state: S) => Partial<S> | void) | Partial<S>) => void;
 };
