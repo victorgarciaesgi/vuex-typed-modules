@@ -1,5 +1,6 @@
 import * as Vuex from 'vuex';
 import { ReturnedGetters, ReturnedActions, ReturnedMutations, ActionBush } from '../types';
+import { VuexModuleHook } from './hooks';
 export interface VuexModuleArgs<S extends Record<string, any>, G extends Vuex.GetterTree<S, any> = never, M extends Vuex.MutationTree<S> = never, A extends ActionBush<S> = never> {
     name: string;
     state: S;
@@ -9,7 +10,7 @@ export interface VuexModuleArgs<S extends Record<string, any>, G extends Vuex.Ge
     options?: Vuex.ModuleOptions;
     logger?: boolean;
 }
-export declare class VuexModule<S extends Record<string, any>, M extends Vuex.MutationTree<S>, G extends Vuex.GetterTree<S, any>, A extends ActionBush<S>> {
+export declare class VuexModule<S extends Record<string, any> = any, M extends Vuex.MutationTree<S> = any, G extends Vuex.GetterTree<S, any> = any, A extends ActionBush<S> = any> {
     protected name: string;
     protected initialState: S;
     protected _getters?: Vuex.GetterTree<S, any>;
@@ -37,3 +38,4 @@ export declare class VuexModule<S extends Record<string, any>, M extends Vuex.Mu
     protected activate(store: Vuex.Store<any>): void;
     deploy(store: Vuex.Store<any>): void;
 }
+export declare const createVuexModule: <S extends Record<string, any>, G extends Vuex.GetterTree<S, any>, M extends Vuex.MutationTree<S>, A extends ActionBush<S>>(params: VuexModuleArgs<S, G, M, A>) => [VuexModule<S, M, G, A>, () => VuexModuleHook<S, M, G, A>];

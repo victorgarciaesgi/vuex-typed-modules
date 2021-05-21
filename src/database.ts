@@ -30,10 +30,10 @@ export class Database {
 
   public deploy(vuexModules: DefaultModule[]) {
     this.loggerBlackList = vuexModules
-      .filter((mod) => {
+      .filter((mod: any) => {
         return !mod['_logger'];
       })
-      .map((mod) => mod['name']);
+      .map((mod: any) => mod['name']);
     return (store: Vuex.Store<any>): void => {
       this.store = store;
       this.install(vuexModules);

@@ -31,7 +31,10 @@ export type inferActions<T extends ActionHandler<any, any>> = T extends (
     : () => ReturnType<T>
   : ReturnType<T>;
 
-export type inferGetters<T extends Getter<any, any>> = T extends (state, getters?) => infer R
+export type inferGetters<T extends Getter<any, any>> = T extends (
+  state: any,
+  getters?: any
+) => infer R
   ? R
   : void;
 

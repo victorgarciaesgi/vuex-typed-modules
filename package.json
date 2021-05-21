@@ -1,6 +1,6 @@
 {
   "name": "vuex-typed-modules",
-  "version": "3.1.8",
+  "version": "4.0.0",
   "description": "A typescript wrapper for Vuex store with fully typed exposure",
   "keywords": [
     "vuex",
@@ -24,20 +24,25 @@
   "typings": "types/index.d.ts",
   "license": "MIT",
   "peerDependencies": {
-    "vuex": "3.x"
+    "@nuxtjs/composition-api": "^0.23.4",
+    "@vue/composition-api": "^1.0.0-rc.9",
+    "vue": "^2.0.0 || >=3.0.0-rc.0",
+    "vuex": "^3.0.0 || >=4.0.0"
   },
   "devDependencies": {
+    "@nuxtjs/composition-api": "^0.23.4",
     "@types/lodash": "^4.14.169",
     "@types/node": "^15.3.1",
     "@types/webpack-env": "^1.16.0",
+    "@vue/composition-api": "^1.0.0-rc.9",
     "lodash": "^4.17.21",
-    "rimraf": "^3.0.2"
+    "rimraf": "^3.0.2",
+    "vue": "^2.6.12",
+    "vuex": "^3.6.2"
   },
   "dependencies": {
     "typescript": "^4.2.4",
-    "vue": "^2.6.12",
-    "vue-demi": "^0.9.0",
-    "vuex": "^3.6.2"
+    "vue-demi": "^0.9.0"
   },
   "repository": {
     "type": "git",

@@ -3,6 +3,7 @@ import { ReturnedGetters, ReturnedActions, ReturnedMutations, ActionBush } from 
 import { buildModifiers } from '../utils/modifiers';
 import { setHelpers } from './helpers';
 import cloneDeep from 'lodash/cloneDeep';
+import { createModuleHook, VuexModuleHook } from './hooks';
 
 export interface VuexModuleArgs<
   S extends Record<string, any>,
@@ -20,10 +21,10 @@ export interface VuexModuleArgs<
 }
 
 export class VuexModule<
-  S extends Record<string, any>,
-  M extends Vuex.MutationTree<S>,
-  G extends Vuex.GetterTree<S, any>,
-  A extends ActionBush<S>
+  S extends Record<string, any> = any,
+  M extends Vuex.MutationTree<S> = any,
+  G extends Vuex.GetterTree<S, any> = any,
+  A extends ActionBush<S> = any
 > {
   protected name!: string;
   protected initialState: S = {} as any;
@@ -36,9 +37,9 @@ export class VuexModule<
 
   protected store!: Vuex.Store<S>;
 
-  public getters: ReturnedGetters<G>;
-  public actions: ReturnedActions<A>;
-  public mutations: ReturnedMutations<M>;
+  public getters!: ReturnedGetters<G>;
+  public actions!: ReturnedActions<A>;
+  public mutations!: ReturnedMutations<M>;
   public state: S = {} as any;
 
   constructor({
@@ -140,6 +141,20 @@ export class VuexModule<
     this.activate(store);
   }
 }
+
+export const createVuexModule = <
+  S extends Record<string, any>,
+  G extends Vuex.GetterTree<S, any>,
+  M extends Vuex.MutationTree<S>,
+  A extends ActionBush<S>
+>(
+  params: VuexModuleArgs<S, G, M, A>
+): [VuexModule<S, M, G, A>, () => VuexModuleHook<S, M, G, A>] => {
+  const defaultModule = new VuexModule(params);
+  const moduleHook = createModuleHook(params);
+
+  return [defaultModule, moduleHook];
+};
 
 // const test = new VuexModule({
 //   name: 'zefez',

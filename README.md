@@ -11,19 +11,17 @@
 [npm-total-downloads-src]: https://img.shields.io/npm/dt/vuex-typed-modules.svg
 [npm-downloads-href]: https://www.npmjs.com/package/vuex-typed-modules
 
-A VueX wrapper to fully type your modules without more boilerplate
+A VueX 3 & 4 wrapper that provides type safe hooks and handlers to your Vuex Store modules with less code!
 
-> Working with Vue 2, and Vue 3 with Vuex4
+> 4.x Support Vue 2 & 3, and Vuex 3 & 4 and added composition-api support (Thanks to `vue-demi`)
 
-I'm realy greatly inspired by [@mrcrowl](https://github.com/mrcrowl) work and his lib [vuex-typex](https://github.com/mrcrowl/vuex-typex)
+> 3.x Working with Vue 2, and Vue 3 with Vuex4 (but not hooks)
 
-I decided to take it a bit further and eliminating all boilerplate for declarating modules
+# Breaking changes in 4.x
 
-It also comes with an vuex action logger
+- v4.x is still compatible with the 3.x api `new VuexModule` but declaration changes if you want to use composition-api
 
-![actionsloggers](https://github.com/victorgarciaesgi/vuex-typed-modules/blob/master/captures/actionlogger.png?raw=true)
-
-# Breaking changes in 3.0
+# Breaking changes in 3.x
 
 - `updateState` now accepts a callback with the state as param. All others update helpers removed
 
@@ -35,7 +33,173 @@ npm i vuex-typed-modules
 yarn add vuex-typed-modules
 ```
 
-# Usage
+# Usage for `4.x`
+
+## Define Module and hook
+
+```typescript
+import { createVuexModule } from 'vuex-typed-modules';
+
+export const [testModule, useTestModule] = createVuexModule({
+  name: 'testModule',
+  state: {
+    count: 1,
+  },
+  mutations: {
+    addCount(state, number: number) {
+      state.count += number;
+    },
+  },
+  actions: {
+    async addCountAsync(_, count: number): Promise<void> {
+      await myAsyncFunction(count);
+      // Calling mutation
+      testModule.mutations.addCount(count);
+    },
+  },
+});
+```
+
+## Module declaration (For 4.x and 3.x)
+
+In your `main.ts`
+
+```typescript
+// exemple for Vue 2
+import { Database } from "vuex-typed-modules";
+import { testModule } from '~modules'
+
+const database = new Database({ logger: true });
+const store = new Vuex.Store({
+  plugins: [database.deploy([testModule])];
+})
+
+new Vue({
+  store,
+  render: h => h(App)
+}).$mount("#app");
+```
+
+## For Nuxt.js
+
+```typescript
+// store/index.ts
+import { testModule } from '~modules';
+
+const database = new Database({ logger: process.browser });
+export const plugins = [database.deploy([testModule])];
+
+export const state = () => ({});
+```
+
+## Usage in your components or in other modules!
+
+```html
+<template>
+  <div class="hello">
+    {{ count }}
+    <button @click="increment">increment</button>
+  </div>
+</template>
+```
+
+```typescript
+import { defineComponent, onBeforeUnmount } from 'vue';
+import { testModule } from '~/modules';
+
+export default defineComponent({
+  name: 'Home',
+  setup() {
+    const {
+      state: { count },
+      actions: { increment },
+    } = useChildStoreModule();
+
+    return {
+      count,
+      increment,
+    };
+  },
+});
+
+@Component
+export default class Home extends Vue {
+  get count() {
+    return testModule.getters.count;
+  }
+
+  async increment() {
+    await testModule.actions.addCountAsync(2);
+  }
+}
+```
+
+## Dynamic Modules
+
+For dynamic modules, simply use the class `VuexDynamicModule` instead
+
+```typescript
+import { createVuexDynamicModule } from 'vuex-typed-modules';
+
+// (Exemple of advanced structure, this is not required)
+type TypedState<T = string> = {
+  count: number;
+  type: T | null;
+};
+
+export const testModule = createVuexDynamicModule({
+  name: 'testModule',
+  state: {
+    count: 1,
+    type: null,
+  } as TypedState,
+  actions: {
+    // Due to limitions of Typescript, I can't provide typings for infered mutations and getters inside the same object.
+    // It would make an infinite loop (I tried).
+    // For dynamic module you can fallback on "commit" "dispatch" and "getters"
+    exemple({ state, commit, dispatch, getters }, param: string) {
+      // ...
+    },
+  },
+});
+```
+
+### Usage
+
+```vue
+<script lang="ts">
+import { defineComponent, onBeforeUnmount } from 'vue';
+import { testModule } from '~/modules';
+
+const [ChildStoreModule, useChildStoreModule] = testModule.instance('child-store');
+// Or if you use advanced types
+const [ChildStoreModule, useChildStoreModule] =
+  testModule.instance<TypedState<'child'>>('child-store');
+// Dot not declare it in other files, only import it from here
+
+export default defineComponent({
+  name: 'TestView',
+  setup() {
+    ChildStoreModule.register();
+    const {
+      state: { count },
+    } = useChildStoreModule();
+
+    onBeforeUnmount(() => {
+      ChildStoreModule.unregister();
+    });
+
+    return {
+      count,
+    };
+  },
+});
+</script>
+```
+
+# -------------------------------------------
+
+# Usage for `3.x`
 
 ## Define Module
 
@@ -64,37 +228,6 @@ export const testModule = new VuexModule({
 });
 ```
 
-## Module implementation
-
-Then in your `main.ts`
-
-```typescript
-import { Database } from "vuex-typed-modules";
-import { testModule } from '~modules'
-
-const database = new Database({ logger: true });
-const store = new Vuex.Store({
-  plugins: [database.deploy([testModule])];
-})
-
-new Vue({
-  store,
-  render: h => h(App)
-}).$mount("#app");
-```
-
-## For Nuxt.js
-
-```typescript
-import * as Modules from '~/modules';
-
-const database = new Database({ logger: process.browser });
-const modules = Object.values(Modules);
-export const plugins = [database.deploy(modules)];
-
-export const state = () => ({});
-```
-
 ## Usage in your components or in other modules!
 
 ```html
@@ -120,55 +253,6 @@ export default class Home extends Vue {
     await testModule.actions.addCountAsync(2);
   }
 }
-```
-
-## Dynamic Modules
-
-For dynamic modules, simply use the class `VuexDynamicModule` instead
-
-```typescript
-import { VuexDynamicModule } from 'vuex-typed-modules';
-
-export const testModule = new VuexDynamicModule({
-  name: 'testModule',
-  state: {
-    count: 1,
-  },
-  actions: {
-    // Due to limitions of Typescript, I can't provide typings for infered mutations and getters inside the same object.
-    // It would make an infinite loop (I tried).
-    // For dynamic module you can fallback on "commit" "dispatch" and "getters"
-    exemple({ state, commit, dispatch, getters }, param: string) {
-      // ...
-    },
-  },
-});
-```
-
-### Usage
-
-```vue
-<script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import { testModule } from '~/modules';
-
-const ChildStoreModule = testModule.instance('child-store');
-
-@Component
-export default class TestView extends Vue {
-  get count() {
-    return ChildStoreModule.state.count;
-  }
-
-  created() {
-    ChildStoreModule.register();
-  }
-
-  beforeDestroy() {
-    ChildStoreModule.unregister();
-  }
-}
-</script>
 ```
 
 ## Default module helpers

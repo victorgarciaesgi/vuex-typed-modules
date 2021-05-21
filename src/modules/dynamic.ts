@@ -1,5 +1,7 @@
+import { ActionBush } from 'src/types';
 import * as Vuex from 'vuex';
 import { VuexModule, VuexModuleArgs } from './default';
+import { createModuleHook, VuexModuleHook } from './hooks';
 
 // function unWrapDynamicModule<T extends VuexDynamicModule<any, any, any, any>>(module: T) {}
 
@@ -13,20 +15,20 @@ export type ModuleToInstance<TModule> = TModule extends VuexDynamicModule<
   : TModule;
 
 export class VuexDynamicModule<
-  S extends Record<string, any>,
-  M extends Vuex.MutationTree<S>,
-  G extends Vuex.GetterTree<S, any>,
-  A extends Record<string, Vuex.ActionHandler<S, any>>
+  S extends Record<string, any> = any,
+  M extends Vuex.MutationTree<S> = any,
+  G extends Vuex.GetterTree<S, any> = any,
+  A extends Record<string, Vuex.ActionHandler<S, any>> = any
 > {
   private nestedName?: string;
   private namespaceName!: string;
-  private module: DynamicModuleInstance<any, any, any, any>;
+  private module!: DynamicModuleInstance<any, any, any, any>;
   private state!: S;
   private getters!: any;
   private mutations!: any;
   private actions!: any;
   private options?: Vuex.ModuleOptions;
-  private store: Vuex.Store<any>;
+  private store!: Vuex.Store<any>;
 
   protected _logger: boolean;
 
@@ -71,12 +73,13 @@ export class VuexDynamicModule<
   }
 
   public instance<NewState extends S = S>(
-    moduleName?: string
-  ): DynamicModuleInstance<NewState, M, G, A> {
-    this.nestedName = moduleName;
+    moduleKey?: string
+  ): [DynamicModuleInstance<NewState, M, G, A>, () => VuexModuleHook<S, M, G, A>] {
+    this.nestedName = moduleKey;
     let fullName = this.name;
     this.module = new DynamicModuleInstance({ name: fullName, ...this.params, store: this.store });
-    return this.module;
+    const dynamicHook = createModuleHook({ name: fullName, ...this.params });
+    return [this.module, dynamicHook];
   }
 }
 
@@ -84,7 +87,7 @@ export class DynamicModuleInstance<
   S extends Record<string, any>,
   M extends Vuex.MutationTree<S>,
   G extends Vuex.GetterTree<S, any>,
-  A extends Record<string, Vuex.ActionHandler<any, any>>
+  A extends ActionBush<any>
 > extends VuexModule<S, M, G, A> {
   private nestedName?: string;
   public isRegistered: boolean = false;
@@ -106,3 +109,16 @@ export class DynamicModuleInstance<
     this.isRegistered = false;
   }
 }
+
+export const createVuexDynamicModule = <
+  S extends Record<string, any>,
+  G extends Vuex.GetterTree<S, any>,
+  M extends Vuex.MutationTree<S>,
+  A extends ActionBush<S>
+>(
+  params: VuexModuleArgs<S, G, M, A>
+): VuexDynamicModule<S, M, G, A> => {
+  const defaultModule = new VuexDynamicModule(params);
+
+  return defaultModule;
+};
