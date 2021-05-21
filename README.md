@@ -186,6 +186,32 @@ export default defineComponent({
 </script>
 ```
 
+## Default module helpers
+
+Vuex types modules also add helpers functions on top of your module to prevent from writing short mutations
+
+```typescript
+testModule.resetState();
+// Reset your module to the initial State
+```
+
+```typescript
+// You can specify only the property you want to update
+testModule.updateState({
+  count: 3,
+});
+
+// You can also give a callback function to have access to the current state
+testModule.updateState((state) => ({
+  count: state.count + 2,
+}));
+
+// And also mutate the state directly (A bit heavier on the update)
+testModule.updateState((state) => {
+  state.count++;
+});
+```
+
 # -------------------------------------------
 
 # Usage for `3.x`
@@ -242,30 +268,4 @@ export default class Home extends Vue {
     await testModule.actions.addCountAsync(2);
   }
 }
-```
-
-## Default module helpers
-
-Vuex types modules also add helpers functions on top of your module to prevent from writing short mutations
-
-```typescript
-YourModule.helpers.resetState();
-// Reset your module to the initial State
-```
-
-```typescript
-// You can specify only the property you want to update
-YourModule.helpers.updateState({
-  count: 3,
-});
-
-// You can also give a callback function to have access to the current state
-YourModule.helpers.updateState((state) => ({
-  count: state.count + 2,
-}));
-
-// And also mutate the state directly (A bit heavier on the update)
-YourModule.helpers.updateState((state) => {
-  state.count++;
-});
 ```
