@@ -121,17 +121,6 @@ export default defineComponent({
     };
   },
 });
-
-@Component
-export default class Home extends Vue {
-  get count() {
-    return testModule.getters.count;
-  }
-
-  async increment() {
-    await testModule.actions.addCountAsync(2);
-  }
-}
 ```
 
 ## Dynamic Modules
