@@ -15,10 +15,10 @@ export type ModuleToInstance<TModule> = TModule extends VuexDynamicModule<
   : TModule;
 
 export class VuexDynamicModule<
-  S extends Record<string, any> = any,
-  M extends Vuex.MutationTree<S> = any,
-  G extends Vuex.GetterTree<S, any> = any,
-  A extends Record<string, Vuex.ActionHandler<S, any>> = any
+  S extends Record<string, any>,
+  M extends Vuex.MutationTree<S>,
+  G extends Vuex.GetterTree<S, any>,
+  A extends ActionBush<S>
 > {
   private nestedName?: string;
   private namespaceName!: string;
@@ -87,7 +87,7 @@ export class DynamicModuleInstance<
   S extends Record<string, any>,
   M extends Vuex.MutationTree<S>,
   G extends Vuex.GetterTree<S, any>,
-  A extends ActionBush<any>
+  A extends ActionBush<S>
 > extends VuexModule<S, M, G, A> {
   private nestedName?: string;
   public isRegistered: boolean = false;
@@ -122,3 +122,20 @@ export const createVuexDynamicModule = <
 
   return defaultModule;
 };
+
+// createVuexDynamicModule({
+//   name: 'zefez',
+//   state: {
+//     foo: 'bar',
+//   },
+//   mutations: {
+//     boo(state) {
+//       state.foo;
+//     },
+//   },
+//   actions: {
+//     test({ state, commit, getters }, test: string | null) {
+//       state.foo;
+//     },
+//   },
+// });

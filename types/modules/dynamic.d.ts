@@ -3,7 +3,7 @@ import * as Vuex from 'vuex';
 import { VuexModule, VuexModuleArgs } from './default';
 import { VuexModuleHook } from './hooks';
 export declare type ModuleToInstance<TModule> = TModule extends VuexDynamicModule<infer S, infer M, infer G, infer A> ? DynamicModuleInstance<S, M, G, A> : TModule;
-export declare class VuexDynamicModule<S extends Record<string, any> = any, M extends Vuex.MutationTree<S> = any, G extends Vuex.GetterTree<S, any> = any, A extends Record<string, Vuex.ActionHandler<S, any>> = any> {
+export declare class VuexDynamicModule<S extends Record<string, any>, M extends Vuex.MutationTree<S>, G extends Vuex.GetterTree<S, any>, A extends ActionBush<S>> {
     private nestedName?;
     private namespaceName;
     private module;
@@ -20,7 +20,7 @@ export declare class VuexDynamicModule<S extends Record<string, any> = any, M ex
     save(store: Vuex.Store<any>): void;
     instance<NewState extends S = S>(moduleKey?: string): [DynamicModuleInstance<NewState, M, G, A>, () => VuexModuleHook<S, M, G, A>];
 }
-export declare class DynamicModuleInstance<S extends Record<string, any>, M extends Vuex.MutationTree<S>, G extends Vuex.GetterTree<S, any>, A extends ActionBush<any>> extends VuexModule<S, M, G, A> {
+export declare class DynamicModuleInstance<S extends Record<string, any>, M extends Vuex.MutationTree<S>, G extends Vuex.GetterTree<S, any>, A extends ActionBush<S>> extends VuexModule<S, M, G, A> {
     private nestedName?;
     isRegistered: boolean;
     constructor({ store, ...args }: VuexModuleArgs<S, G, M, A> & {

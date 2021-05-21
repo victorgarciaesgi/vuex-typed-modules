@@ -21,10 +21,10 @@ export interface VuexModuleArgs<
 }
 
 export class VuexModule<
-  S extends Record<string, any> = any,
-  M extends Vuex.MutationTree<S> = any,
-  G extends Vuex.GetterTree<S, any> = any,
-  A extends ActionBush<S> = any
+  S extends Record<string, any>,
+  M extends Vuex.MutationTree<S>,
+  G extends Vuex.GetterTree<S, any>,
+  A extends ActionBush<S>
 > {
   protected name!: string;
   protected initialState: S = {} as any;
