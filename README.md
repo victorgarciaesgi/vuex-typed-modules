@@ -125,7 +125,7 @@ export default defineComponent({
 
 ## Dynamic Modules
 
-For dynamic modules, simply use the class `VuexDynamicModule` instead
+For dynamic modules, use `createVuexDynamicModule` instead
 
 ```typescript
 import { createVuexDynamicModule } from 'vuex-typed-modules';
