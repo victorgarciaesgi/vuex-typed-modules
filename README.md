@@ -51,7 +51,7 @@ export const [testModule, useTestModule] = createVuexModule({
     },
   },
   actions: {
-    async addCountAsync(_, count: number): Promise<void> {
+    async addCountAsync({state}, count: number): Promise<void> {
       await myAsyncFunction(count);
       // Calling mutation
       testModule.mutations.addCount(count);
@@ -105,7 +105,7 @@ export const state = () => ({});
 
 ```typescript
 import { defineComponent, onBeforeUnmount } from 'vue';
-import { testModule } from '~/modules';
+import { useTestModule } from '~/modules';
 
 export default defineComponent({
   name: 'Home',
@@ -113,7 +113,7 @@ export default defineComponent({
     const {
       state: { count },
       actions: { increment },
-    } = useChildStoreModule();
+    } = useTestModule();
 
     return {
       count,
