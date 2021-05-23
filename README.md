@@ -130,18 +130,12 @@ For dynamic modules, simply use the class `VuexDynamicModule` instead
 ```typescript
 import { createVuexDynamicModule } from 'vuex-typed-modules';
 
-// (Exemple of advanced structure, this is not required)
-type TypedState<T = string> = {
-  count: number;
-  type: T | null;
-};
-
-export const testModule = createVuexDynamicModule({
-  name: 'testModule',
+export const dynamicModule = createVuexDynamicModule({
+  name: 'dynamicModule',
   state: {
     count: 1,
     type: null,
-  } as TypedState,
+  },
   actions: {
     // Due to limitions of Typescript, I can't provide typings for infered mutations and getters inside the same object.
     // It would make an infinite loop (I tried).
@@ -158,12 +152,9 @@ export const testModule = createVuexDynamicModule({
 ```vue
 <script lang="ts">
 import { defineComponent, onBeforeUnmount } from 'vue';
-import { testModule } from '~/modules';
+import { dynamicModule } from '~/modules';
 
-const [ChildStoreModule, useChildStoreModule] = testModule.instance('child-store');
-// Or if you use advanced types
-const [ChildStoreModule, useChildStoreModule] =
-  testModule.instance<TypedState<'child'>>('child-store');
+const [ChildStoreModule, useChildStoreModule] = dynamicModule.instance('child-store');
 // Dot not declare it in other files, only import it from here
 
 export default defineComponent({

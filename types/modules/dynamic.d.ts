@@ -20,7 +20,7 @@ export declare class VuexDynamicModule<S extends Record<string, any>, M extends 
     save(store: Vuex.Store<any>): void;
     instance<NewState extends S = S>(moduleKey?: string): [DynamicModuleInstance<NewState, M, G, A>, () => VuexModuleHook<S, M, G, A>];
 }
-export declare class DynamicModuleInstance<S extends Record<string, any>, M extends Vuex.MutationTree<S>, G extends Vuex.GetterTree<S, any>, A extends ActionBush<S>> extends VuexModule<S, M, G, A> {
+export declare class DynamicModuleInstance<S extends Record<string, any>, M extends Vuex.MutationTree<S>, G extends Vuex.GetterTree<S, any>, A extends Record<string, Vuex.ActionHandler<S, any>>> extends VuexModule<S, M, G, A> {
     private nestedName?;
     isRegistered: boolean;
     constructor({ store, ...args }: VuexModuleArgs<S, G, M, A> & {
@@ -29,4 +29,4 @@ export declare class DynamicModuleInstance<S extends Record<string, any>, M exte
     register(): void;
     unregister(): void;
 }
-export declare const createVuexDynamicModule: <S extends Record<string, any>, G extends Vuex.GetterTree<S, any>, M extends Vuex.MutationTree<S>, A extends ActionBush<S>>(params: VuexModuleArgs<S, G, M, A>) => VuexDynamicModule<S, M, G, A>;
+export declare const createVuexDynamicModule: <S extends Record<string, any>, G extends Vuex.GetterTree<S, any>, M extends Vuex.MutationTree<S>, A extends Record<string, Vuex.ActionHandler<S, any>>>(params: VuexModuleArgs<S, G, M, A>) => VuexDynamicModule<S, M, G, A>;

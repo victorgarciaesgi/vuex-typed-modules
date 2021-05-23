@@ -87,7 +87,7 @@ export class DynamicModuleInstance<
   S extends Record<string, any>,
   M extends Vuex.MutationTree<S>,
   G extends Vuex.GetterTree<S, any>,
-  A extends ActionBush<S>
+  A extends Record<string, Vuex.ActionHandler<S, any>>
 > extends VuexModule<S, M, G, A> {
   private nestedName?: string;
   public isRegistered: boolean = false;
@@ -114,7 +114,7 @@ export const createVuexDynamicModule = <
   S extends Record<string, any>,
   G extends Vuex.GetterTree<S, any>,
   M extends Vuex.MutationTree<S>,
-  A extends ActionBush<S>
+  A extends Record<string, Vuex.ActionHandler<S, any>>
 >(
   params: VuexModuleArgs<S, G, M, A>
 ): VuexDynamicModule<S, M, G, A> => {
