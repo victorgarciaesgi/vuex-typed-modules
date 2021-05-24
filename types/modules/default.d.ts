@@ -1,6 +1,6 @@
 import * as Vuex from 'vuex';
 import { ReturnedGetters, ReturnedActions, ReturnedMutations, ActionBush } from '../types';
-import { VuexModuleHook } from './hooks';
+import { VuexModuleHook, VuexModuleHookOptions } from './hooks';
 export interface VuexModuleArgs<S extends Record<string, any>, G extends Vuex.GetterTree<S, any> = never, M extends Vuex.MutationTree<S> = never, A extends ActionBush<S> = never> {
     name: string;
     state: S;
@@ -38,4 +38,4 @@ export declare class VuexModule<S extends Record<string, any>, M extends Vuex.Mu
     protected activate(store: Vuex.Store<any>): void;
     deploy(store: Vuex.Store<any>): void;
 }
-export declare const createVuexModule: <S extends Record<string, any>, G extends Vuex.GetterTree<S, any>, M extends Vuex.MutationTree<S>, A extends ActionBush<S>>(params: VuexModuleArgs<S, G, M, A>) => [VuexModule<S, M, G, A>, () => VuexModuleHook<S, M, G, A>];
+export declare const createVuexModule: <S extends Record<string, any>, G extends Vuex.GetterTree<S, any>, M extends Vuex.MutationTree<S>, A extends ActionBush<S>>(params: VuexModuleArgs<S, G, M, A>) => [VuexModule<S, M, G, A>, <TWrap extends boolean = false>(hookOptions?: VuexModuleHookOptions<TWrap> | undefined) => VuexModuleHook<S, M, G, A, TWrap>];

@@ -9,7 +9,7 @@ import {
 } from '../types';
 import { buildModifiers } from '../utils/modifiers';
 import cloneDeep from 'lodash/cloneDeep';
-import { isVue2, isVue3, getCurrentInstance, readonly, reactive, ref } from 'vue-demi';
+import { getCurrentInstance, readonly, toRefs, ToRefs } from 'vue-demi';
 
 export const useStore = (name: string): Store<any> => {
   const vm = getCurrentInstance();
@@ -17,13 +17,18 @@ export const useStore = (name: string): Store<any> => {
   return vm.proxy.$store;
 };
 
+export interface VuexModuleHookOptions<TWrap extends boolean> {
+  unwrap: TWrap;
+}
+
 export type VuexModuleHook<
   S extends Record<string, any>,
   M extends MutationTree<S>,
   G extends GetterTree<S, any>,
-  A extends ActionBush<S>
+  A extends ActionBush<S>,
+  TWrap extends boolean = false
 > = {
-  state: S;
+  state: TWrap extends true ? S : ToRefs<S>;
   getters: ReturnedGetters<G>;
   mutations: ReturnedMutations<M>;
   actions: ReturnedActions<A>;
@@ -33,14 +38,22 @@ export function createDefaultModuleHook<
   S extends Record<string, any>,
   M extends MutationTree<S>,
   G extends GetterTree<S, any>,
-  A extends ActionBush<S>
+  A extends ActionBush<S>,
+  TWrap extends boolean
 >({
   name,
   state,
   actions,
   getters,
   mutations,
-}: VuexModuleArgs<S, G, M, A>): VuexModuleHook<S, M, G, A> {
+  hookOptions,
+}: VuexModuleArgs<S, G, M, A> & { hookOptions?: VuexModuleHookOptions<TWrap> }): VuexModuleHook<
+  S,
+  M,
+  G,
+  A,
+  TWrap
+> {
   const store = useStore(name);
 
   const initialState = readonly(cloneDeep(state));
@@ -71,7 +84,7 @@ export function createDefaultModuleHook<
   const _mutations = registerMutations(mutations);
   const _actions = registerActions(actions);
   const _getters = registerGetters(getters);
-  const _state = readonly(reactiveState());
+  const _state = hookOptions?.unwrap ? readonly(reactiveState()) : toRefs(reactiveState());
 
   return {
     state: _state,
@@ -89,5 +102,6 @@ export function createModuleHook<
   G extends GetterTree<S, any>,
   A extends ActionBush<S>
 >(params: VuexModuleArgs<S, G, M, A>) {
-  return () => createDefaultModuleHook(params);
+  return <TWrap extends boolean>(hookOptions?: VuexModuleHookOptions<TWrap>) =>
+    createDefaultModuleHook({ ...params, hookOptions });
 }

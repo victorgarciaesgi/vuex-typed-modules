@@ -3,7 +3,7 @@ import { ReturnedGetters, ReturnedActions, ReturnedMutations, ActionBush } from 
 import { buildModifiers } from '../utils/modifiers';
 import { setHelpers } from './helpers';
 import cloneDeep from 'lodash/cloneDeep';
-import { createModuleHook, VuexModuleHook } from './hooks';
+import { createModuleHook, VuexModuleHook, VuexModuleHookOptions } from './hooks';
 
 export interface VuexModuleArgs<
   S extends Record<string, any>,
@@ -149,7 +149,12 @@ export const createVuexModule = <
   A extends ActionBush<S>
 >(
   params: VuexModuleArgs<S, G, M, A>
-): [VuexModule<S, M, G, A>, () => VuexModuleHook<S, M, G, A>] => {
+): [
+  VuexModule<S, M, G, A>,
+  <TWrap extends boolean = false>(
+    hookOptions?: VuexModuleHookOptions<TWrap>
+  ) => VuexModuleHook<S, M, G, A, TWrap>
+] => {
   const defaultModule = new VuexModule(params);
   const moduleHook = createModuleHook(params);
 

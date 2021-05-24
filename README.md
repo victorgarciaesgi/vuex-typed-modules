@@ -17,6 +17,27 @@ A VueX 3 & 4 wrapper that provides type safe hooks and handlers to your Vuex Sto
 
 > 3.x Working with Vue 2, and Vue 3 with Vuex4 (but not hooks)
 
+# Update in 4.1
+
+Store hooks now return refs for the state. It can be overwridden by using the option `unwrap`
+
+With Refs
+
+```ts
+// You can destructure state when using refs
+const {
+  state: { count },
+} = useTestModule(); // count is of type `Ref<number>`
+```
+
+Without Refs
+
+```ts
+// If you destructure the state, it will loses reactivity
+const { state } = useTestModule({ unwrap: true });
+state.count; // count is of type `number`
+```
+
 # Breaking changes in 4.x
 
 - v4.x is still compatible with the 3.x api `new VuexModule` but declaration changes if you want to use composition-api
@@ -51,7 +72,7 @@ export const [testModule, useTestModule] = createVuexModule({
     },
   },
   actions: {
-    async addCountAsync({state}, count: number): Promise<void> {
+    async addCountAsync(_, count: number): Promise<void> {
       await myAsyncFunction(count);
       // Calling mutation
       testModule.mutations.addCount(count);
@@ -105,7 +126,7 @@ export const state = () => ({});
 
 ```typescript
 import { defineComponent, onBeforeUnmount } from 'vue';
-import { useTestModule } from '~/modules';
+import { testModule } from '~/modules';
 
 export default defineComponent({
   name: 'Home',
@@ -113,7 +134,7 @@ export default defineComponent({
     const {
       state: { count },
       actions: { increment },
-    } = useTestModule();
+    } = useChildStoreModule();
 
     return {
       count,
@@ -125,7 +146,7 @@ export default defineComponent({
 
 ## Dynamic Modules
 
-For dynamic modules, use `createVuexDynamicModule` instead
+For dynamic modules, simply use the class `VuexDynamicModule` instead
 
 ```typescript
 import { createVuexDynamicModule } from 'vuex-typed-modules';
