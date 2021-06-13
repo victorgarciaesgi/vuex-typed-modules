@@ -287,6 +287,7 @@ export default class Home extends Vue {
 ```typescript
 // user.spec.ts
 import { testStore } from 'vuex-typed-modules';
+import { createLocalVue } from '@vue/test-utils';
 // import state, actions, mutations and getters from some store module
 
 const configStore = {
@@ -295,6 +296,9 @@ const configStore = {
 	mutations,
 	getters
 };
+
+const localVue = createLocalVue();
+localVue.use(Vuex);
 
 const store = testStore(configStore);
 
