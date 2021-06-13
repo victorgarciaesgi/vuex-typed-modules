@@ -8,13 +8,13 @@ type GenerateTypedStoreReturn<T extends StoreDefaults> = Omit<
 > & {
   commit<K extends keyof T['mutations'], P extends Parameters<T['mutations'][K]>[1]>(
     key: K,
-    payload: P,
+    payload?: P,
     options?: CommitOptions
   ): ReturnType<T['mutations'][K]>;
 } & {
   dispatch<K extends keyof T['actions']>(
     key: K,
-    payload: Parameters<T['actions'][K]>[1],
+    payload?: Parameters<T['actions'][K]>[1],
     options?: DispatchOptions
   ): ReturnType<T['actions'][K]>;
 } & {

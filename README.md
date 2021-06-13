@@ -287,7 +287,7 @@ export default class Home extends Vue {
 ```typescript
 // user.spec.ts
 import { testStore } from 'vuex-typed-modules';
-// import state, actions, mutations and getters from your store module
+// import state, actions, mutations and getters from some store module
 
 const configStore = {
 	state,
