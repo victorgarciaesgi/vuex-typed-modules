@@ -281,3 +281,34 @@ export default class Home extends Vue {
   }
 }
 ```
+
+# Tests
+
+```typescript
+// user.spec.ts
+import { createTestStore } from 'vuex-typed-modules';
+import { createLocalVue } from '@vue/test-utils';
+// import state, actions, mutations and getters from some store module
+
+const configStore = {
+	state,
+	actions,
+	mutations,
+	getters
+};
+
+const localVue = createLocalVue();
+localVue.use(Vuex);
+
+const store = createTestStore(configStore);
+
+describe('User Module', () => {
+	it('name should be empty', () => {
+		expect(store.state.name).toBe('');
+	});
+	it('name should change to Foo', () => {
+	    store.dispatch('CHANGE_NAME', 'Foo');
+		expect(store.state.name).toBe('Foo');
+	});
+});
+```
