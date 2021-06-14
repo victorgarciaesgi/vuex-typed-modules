@@ -23,9 +23,9 @@ type GenerateTypedStoreReturn<T extends StoreDefaults> = Omit<
   };
 };
 
-const testStore = <T extends StoreDefaults>(options: T): GenerateTypedStoreReturn<T> =>
+const createTestStore = <T extends StoreDefaults>(options: T): GenerateTypedStoreReturn<T> =>
   new Vuex.Store({
     ...options,
   }) as unknown as GenerateTypedStoreReturn<T>;
 
-export { testStore };
+export { createTestStore };

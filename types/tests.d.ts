@@ -14,5 +14,5 @@ declare type GenerateTypedStoreReturn<T extends StoreDefaults> = Omit<Store<T['s
         [K in keyof T['getters']]: ReturnType<T['getters'][K]>;
     };
 };
-declare const testStore: <T extends StoreDefaults>(options: T) => GenerateTypedStoreReturn<T>;
-export { testStore };
+declare const createTestStore: <T extends StoreDefaults>(options: T) => GenerateTypedStoreReturn<T>;
+export { createTestStore };
