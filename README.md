@@ -86,7 +86,6 @@ export const [testModule, useTestModule] = createVuexModule({
 In your `main.ts`
 
 ```typescript
-// exemple for Vue 2
 import { Database } from "vuex-typed-modules";
 import { testModule } from '~modules'
 
@@ -95,6 +94,10 @@ const store = new Vuex.Store({
   plugins: [database.deploy([testModule])];
 })
 
+// If you're using Vue 3:
+createApp(App).use(store).mount("#app");
+
+// If you're using Vue 2:
 new Vue({
   store,
   render: h => h(App)
