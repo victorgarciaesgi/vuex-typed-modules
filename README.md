@@ -17,35 +17,6 @@ A VueX 3 & 4 wrapper that provides type safe hooks and handlers to your Vuex Sto
 
 > 3.x Working with Vue 2, and Vue 3 with Vuex4 (but not hooks)
 
-# Update in 4.1
-
-Store hooks now return refs for the state. It can be overwridden by using the option `unwrap`
-
-With Refs
-
-```ts
-// You can destructure state when using refs
-const {
-  state: { count },
-} = useTestModule(); // count is of type `Ref<number>`
-```
-
-Without Refs
-
-```ts
-// If you destructure the state, it will loses reactivity
-const { state } = useTestModule({ unwrap: true });
-state.count; // count is of type `number`
-```
-
-# Breaking changes in 4.x
-
-- v4.x is still compatible with the 3.x api `new VuexModule` but declaration changes if you want to use composition-api
-
-# Breaking changes in 3.x
-
-- `updateState` now accepts a callback with the state as param. All others update helpers removed
-
 ## Installation
 
 ```bash
@@ -54,7 +25,7 @@ npm i vuex-typed-modules
 yarn add vuex-typed-modules
 ```
 
-# Usage for `4.x`
+# Usage for version `4.x`
 
 ## Define Module and hook
 
@@ -146,6 +117,28 @@ export default defineComponent({
     };
   },
 });
+```
+
+## Note
+
+Store hooks return refs for the state. It can be overwridden by using the option `unwrap`
+
+With Refs
+
+```ts
+// You can destructure state when using refs
+const {
+  state: { count },
+} = useTestModule(); // count is of type `Ref<number>`
+console.log(count.value);
+```
+
+Without Refs
+
+```ts
+// If you destructure the state, it will loses reactivity
+const { state } = useTestModule({ unwrap: true });
+state.count; // count is of type `number`
 ```
 
 ## Dynamic Modules
