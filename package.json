@@ -29,6 +29,14 @@
     "vue": "^2.0.0 || >=3.0.0-rc.0",
     "vuex": "^3.0.0 || >=4.0.0"
   },
+  "peerDependenciesMeta": {
+    "@nuxtjs/composition-api": {
+      "optional": true
+    },
+    "@vue/composition-api": {
+      "optional": true
+    }
+  },
   "devDependencies": {
     "@nuxtjs/composition-api": "^0.24.7",
     "@types/lodash": "^4.14.171",
